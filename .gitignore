@@ -1,0 +1,22 @@
+# Original dataset archive (kept locally)
+/Data for EECE 490 Project (1).zip
+
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Python environments and caches
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local source data and generated inspection outputs
+/data/
+/outputs/

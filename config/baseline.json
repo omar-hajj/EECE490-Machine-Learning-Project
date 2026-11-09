@@ -1,0 +1,22 @@
+{
+  "approval_status": "approved_by_user",
+  "approval_date": "2026-11-08",
+  "approval_scope": "First provisional history-based baseline check, following the plain-language explanation",
+  "hourly_rule": "Require every nominal sampling slot; skip incomplete hours without filling",
+  "clock": "As recorded local clock; no timezone conversion",
+  "power_units": "Original source units; no conversion or cross-site pooling",
+  "azm": {
+    "sampling_minutes": 5,
+    "targets": {"load": "Load Power", "pv": "Production"},
+    "validation_start": "2026-08-01",
+    "validation_end_exclusive": "2026-09-01",
+    "reserved_test_end_exclusive": "2026-10-01"
+  },
+  "other_sites": {
+    "sampling_minutes": 30,
+    "targets": {"load": "Load power (w)", "pv": "PV power (w)"},
+    "validation_start": "2025-06-01",
+    "validation_end_exclusive": "2025-07-01",
+    "reserved_test_end_exclusive": "2025-08-01"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "scope": "Individual sites across Lebanon",
+  "forecast_horizon_hours": 24,
+  "outputs": [
+    "electricity_demand",
+    "solar_production",
+    "generator_recommendations"
+  ],
+  "primary_input_mode": "historical_data_location_and_equipment",
+  "experimental_input_mode": "location_only",
+  "location_only_acceptance": {
+    "status": "six_site_trial_measured_awaiting_user_acceptance_limits",
+    "maximum_nmae": null,
+    "maximum_nmae_gap": null,
+    "evaluation_requirement": "Unseen-site evaluation without that site's history as model input, training data, or normalization input",
+    "results_report": "LOCATION_ONLY_RESULTS.md"
+  },
+  "generator_policy": {
+    "parallel_operation_confirmed_by_user": true,
+    "usable_capacities_kw": null,
+    "reserve_margin_fraction": null,
+    "allowed_configurations": null,
+    "capacity_source": "Verified usable generator capacities supplied per site"
+  },
+  "unresolved": [
+    "Weather publication times remain unverified; village units confirmed W; six clocks inspected; Municipality clock conflict pending",
+    "Village meter boundaries relative to PV still unknown; Azm total demand, PV, kW units and local DST clock confirmed",
+    "National/unseen-location evaluation still needed; approved six-site within-village comparison completed with no acceptance cutoff chosen",
+    "Generator capacities, availability, permitted combinations and reserve margin"
+  ]
+}

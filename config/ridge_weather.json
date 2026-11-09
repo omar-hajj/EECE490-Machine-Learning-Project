@@ -1,0 +1,20 @@
+{
+  "model": "Ridge",
+  "experiment": "provisional_history_calendar_and_forecast_weather",
+  "site_ids": ["azm"],
+  "alpha_candidates": [0.1, 1.0, 10.0, 100.0, 1000.0],
+  "lag_hours": [24, 168],
+  "calendar_feature": "hour_of_week_one_hot",
+  "selection_metric": "validation_mae_on_hours_shared_with_all_baselines",
+  "preprocessing_fit": "training_rows_only",
+  "prediction_policy": "Report raw predictions; show nonnegative clipping as a separate diagnostic",
+  "weather": {
+    "enabled": true,
+    "provisional_nominal_availability_approved_by_user": true,
+    "approval_date": "2026-11-08",
+    "publication_availability_verified": false,
+    "limitation": "Use nominal previous_day1 availability; exact historical publication timing is missing. Results are preliminary."
+  },
+  "data_rules": "Reuse approved complete-hour data; preserve recorded zeros/spikes; no imputation",
+  "final_test": "Not read, fitted, tuned or scored"
+}

@@ -1,0 +1,171 @@
+{
+  "sites": [
+    {
+      "site_id": "azm",
+      "site_name": "Azm University",
+      "source_label": "2026-10-21 14_06_24Historical data.xlsx",
+      "source_identity_confirmed": true,
+      "latitude": 34.4453066,
+      "longitude": 35.8440889,
+      "power_unit_confirmed": "kW",
+      "confirmed_source_meanings": {
+        "Production": "solar_pv_power",
+        "Load Power": "campus_load_power"
+      },
+      "metadata_confirmation_source": "User confirmation on 2026-11-08",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-08",
+      "load_meter_boundary_relative_to_pv": "total_campus_demand_including_solar",
+      "load_boundary_confirmation_source": "User confirmed on 2026-11-09: 100 kW load with 30 kW solar is recorded as 100 kW",
+      "generator_parallel_operation_confirmed": true,
+      "generator_usable_capacities_kw": null,
+      "allowed_generator_configurations": null
+    },
+    {
+      "site_id": "household_1",
+      "source_label": "Household1 Data.zip",
+      "location_group": "deir_qanoun_en_nahr",
+      "latitude": null,
+      "longitude": null,
+      "power_unit_confirmed": "W",
+      "weather_latitude": 33.2993,
+      "weather_longitude": 35.31123,
+      "weather_location_precision": "approved_village_representative_point",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-09",
+      "unit_confirmation_source": "User confirmed all seven village datasets use watts on 2026-11-09",
+      "clock_verification_status": "march_dst_transition_consistent_with_user_report"
+    },
+    {
+      "site_id": "household_2",
+      "source_label": "Household2 Data.zip",
+      "location_group": "deir_qanoun_en_nahr",
+      "latitude": null,
+      "longitude": null,
+      "power_unit_confirmed": "W",
+      "weather_latitude": 33.2993,
+      "weather_longitude": 35.31123,
+      "weather_location_precision": "approved_village_representative_point",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-09",
+      "unit_confirmation_source": "User confirmed all seven village datasets use watts on 2026-11-09",
+      "clock_verification_status": "march_dst_transition_consistent_with_user_report"
+    },
+    {
+      "site_id": "household_3",
+      "source_label": "Household3 Data.zip",
+      "location_group": "deir_qanoun_en_nahr",
+      "latitude": null,
+      "longitude": null,
+      "power_unit_confirmed": "W",
+      "weather_latitude": 33.2993,
+      "weather_longitude": 35.31123,
+      "weather_location_precision": "approved_village_representative_point",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-09",
+      "unit_confirmation_source": "User confirmed all seven village datasets use watts on 2026-11-09",
+      "clock_verification_status": "march_dst_transition_consistent_with_user_report"
+    },
+    {
+      "site_id": "industrial_1",
+      "source_label": "Industrial 1 Data.zip",
+      "location_group": "deir_qanoun_en_nahr",
+      "latitude": null,
+      "longitude": null,
+      "power_unit_confirmed": "W",
+      "weather_latitude": 33.2993,
+      "weather_longitude": 35.31123,
+      "weather_location_precision": "approved_village_representative_point",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-09",
+      "unit_confirmation_source": "User confirmed all seven village datasets use watts on 2026-11-09",
+      "clock_verification_status": "march_dst_transition_consistent_with_user_report"
+    },
+    {
+      "site_id": "industrial_2",
+      "source_label": "Industrial 2 Data.zip",
+      "location_group": "deir_qanoun_en_nahr",
+      "latitude": null,
+      "longitude": null,
+      "power_unit_confirmed": "W",
+      "weather_latitude": 33.2993,
+      "weather_longitude": 35.31123,
+      "weather_location_precision": "approved_village_representative_point",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-09",
+      "unit_confirmation_source": "User confirmed all seven village datasets use watts on 2026-11-09",
+      "clock_verification_status": "march_dst_transition_consistent_with_user_report"
+    },
+    {
+      "site_id": "industrial_3",
+      "source_label": "Industrial 3 Data.zip",
+      "location_group": "deir_qanoun_en_nahr",
+      "latitude": null,
+      "longitude": null,
+      "power_unit_confirmed": "W",
+      "weather_latitude": 33.2993,
+      "weather_longitude": 35.31123,
+      "weather_location_precision": "approved_village_representative_point",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-09",
+      "unit_confirmation_source": "User confirmed all seven village datasets use watts on 2026-11-09",
+      "clock_verification_status": "march_dst_transition_consistent_with_user_report"
+    },
+    {
+      "site_id": "municipality",
+      "source_label": "Municipality Data.zip",
+      "location_group": "deir_qanoun_en_nahr",
+      "latitude": null,
+      "longitude": null,
+      "power_unit_confirmed": "W",
+      "weather_latitude": 33.2993,
+      "weather_longitude": 35.31123,
+      "weather_location_precision": "approved_village_representative_point",
+      "meter_clock": "Asia/Beirut",
+      "meter_clock_observes_dst": true,
+      "meter_clock_confirmation_source": "User confirmation on 2026-11-09",
+      "unit_confirmation_source": "User confirmed all seven village datasets use watts on 2026-11-09",
+      "clock_verification_status": "conflict_in_march_dst_inspection_pending_clarification"
+    }
+  ],
+  "weather_coordinate_candidates": {
+    "forecast_file": {
+      "latitude": 34.45713,
+      "longitude": 35.867466
+    },
+    "observed_file": {
+      "latitude": 34.411247,
+      "longitude": 35.88679
+    },
+    "user_maps_link": {
+      "latitude": 34.4453066,
+      "longitude": 35.8440889,
+      "place_name": "Azm University",
+      "source_url": "https://maps.app.goo.gl/BrYwiv7y3WjZHmNb6?g_st=ac",
+      "dataset_mapping_confirmed": true
+    },
+    "selected_site_coordinates": "user_maps_link",
+    "weather_provenance_verified": false,
+    "note": "Returned weather coordinates may identify model grid cells, so coordinate differences alone do not invalidate weather files."
+  },
+  "location_groups": {
+    "deir_qanoun_en_nahr": {
+      "name_ar": "دير قانون النهر",
+      "name_en": "Deir Qanoun en Nahr",
+      "name_confirmed_by_user": "2026-11-09",
+      "representative_latitude": 33.2993,
+      "representative_longitude": 35.31123,
+      "coordinate_precision": "Village place point; not individual meter coordinates",
+      "coordinate_source": "https://mapcarta.com/12896870",
+      "underlying_map_feature": "OpenStreetMap node 6337698295",
+      "village_point_weather_use_approved_by_user": "2026-11-09"
+    }
+  }
+}

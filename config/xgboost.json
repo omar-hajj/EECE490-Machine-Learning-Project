@@ -1,0 +1,16 @@
+{
+  "model": "XGBoost",
+  "experiment": "history_calendar_point_forecast_comparison",
+  "lag_hours": [24, 168],
+  "candidate_parameters": [
+    {"max_depth": 2, "n_estimators": 200, "learning_rate": 0.05},
+    {"max_depth": 3, "n_estimators": 200, "learning_rate": 0.05},
+    {"max_depth": 4, "n_estimators": 200, "learning_rate": 0.05},
+    {"max_depth": 3, "n_estimators": 400, "learning_rate": 0.05}
+  ],
+  "selection_metric": "validation_mae_on_hours_shared_with_all_baselines",
+  "weather": {"enabled": false},
+  "prediction_policy": "Raw predictions; clipping diagnostic reported separately",
+  "data_rules": "Approved complete hourly inputs; no new cleaning or imputation",
+  "final_test": "Unscored"
+}

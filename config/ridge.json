@@ -1,0 +1,16 @@
+{
+  "model": "Ridge",
+  "experiment": "history_and_calendar_without_unverified_weather",
+  "alpha_candidates": [0.1, 1.0, 10.0, 100.0, 1000.0],
+  "lag_hours": [24, 168],
+  "calendar_feature": "hour_of_week_one_hot",
+  "selection_metric": "validation_mae_on_hours_shared_with_all_baselines",
+  "preprocessing_fit": "training_rows_only",
+  "prediction_policy": "Report raw predictions; show nonnegative clipping as a separate diagnostic",
+  "weather": {
+    "enabled": false,
+    "reason": "Meter clock and forecast availability/interval alignment need confirmation"
+  },
+  "data_rules": "Reuse approved complete-hour data; preserve recorded zeros/spikes; no imputation",
+  "final_test": "Not read, fitted, tuned or scored"
+}

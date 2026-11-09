@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lebanon-energy-forecast"
+version = "0.1.0"
+description = "Site electricity forecasting and generator planning for Lebanon"
+requires-python = ">=3.11"
+dependencies = ["openpyxl==3.1.5"]
+
+[project.optional-dependencies]
+modeling = ["scikit-learn>=1.5,<2", "tzdata>=2025.1", "xgboost>=2.1,<4"]
+api = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.27,<1"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

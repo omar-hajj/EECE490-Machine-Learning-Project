@@ -1,0 +1,24 @@
+{
+  "approved_by_user": true,
+  "approval_date": "2026-11-09",
+  "site_ids": ["household_1", "household_2", "household_3", "industrial_1", "industrial_2", "industrial_3"],
+  "excluded_sites": {"municipality": "User requested clock inspection; inspection conflicts with reported DST. User approved six-site trial while clarification is pending."},
+  "training_start": "2025-04-01",
+  "inner_validation_start": "2025-05-01",
+  "evaluation_start": "2025-06-01",
+  "evaluation_end_exclusive": "2025-07-01",
+  "holdout_groups": [["household_1", "household_2"], ["household_3"], ["industrial_1"], ["industrial_2"], ["industrial_3"]],
+  "ridge_alphas": [0.1, 1.0, 10.0, 100.0, 1000.0],
+  "xgboost_candidates": [
+    {"max_depth": 2, "n_estimators": 200, "learning_rate": 0.05},
+    {"max_depth": 3, "n_estimators": 200, "learning_rate": 0.05},
+    {"max_depth": 4, "n_estimators": 200, "learning_rate": 0.05},
+    {"max_depth": 3, "n_estimators": 400, "learning_rate": 0.05}
+  ],
+  "selection": "Fit April, select settings on May without held-out sites, refit April-May, evaluate June",
+  "history_selection": "Select own-site ML candidate or one of the three simple baselines using May only",
+  "location_features": "Village coordinates, known calendar date and forecast weather only; no site identifier, meter history, site scale or equipment capacity",
+  "weather_timing": "User-approved preliminary nominal previous_day1 timing; publication times unverified",
+  "final_test": "July is reserved and unscored",
+  "acceptance_limits": null
+}
