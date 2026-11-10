@@ -10,8 +10,9 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from lebanon_energy.baselines import METHODS, file_sha256
-from lebanon_energy.evaluation import score
+from lebanon_energy.data.preparation import file_sha256
+from lebanon_energy.models.baselines import METHODS
+from lebanon_energy.evaluation.metrics import score
 
 
 def main():

@@ -6,8 +6,8 @@ import csv
 import json
 import math
 
-from .features import history_calendar_features
-from .weather import VARIABLES, aligned_features
+from ..features.history import history_calendar_features
+from ..data.weather import VARIABLES, aligned_features
 
 
 def load_series_kw(path, sites, site_ids, cutoff):

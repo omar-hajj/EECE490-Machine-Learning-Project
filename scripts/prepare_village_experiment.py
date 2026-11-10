@@ -7,9 +7,9 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from lebanon_energy.baselines import file_sha256
-from lebanon_energy.village import load_series_kw, load_village_weather
-from lebanon_energy.weather import VARIABLES, aligned_features
+from lebanon_energy.data.preparation import file_sha256
+from lebanon_energy.features.village import load_series_kw, load_village_weather
+from lebanon_energy.data.weather import VARIABLES, aligned_features
 
 
 def main():

@@ -5,6 +5,12 @@
   "hourly_rule": "Require every nominal sampling slot; skip incomplete hours without filling",
   "clock": "As recorded local clock; no timezone conversion",
   "power_units": "Original source units; no conversion or cross-site pooling",
+  "frozen_readings": {
+    "decision": "Omar, 2026-11-10: mark the Household 3 meter freeze as missing (2025-04-04 19:30 to 2025-04-05 04:00, all four channels identical for 18 readings). The December battery stretches at -20 W are standby draw and are kept.",
+    "site_ids": ["household_3"],
+    "minimum_consecutive_readings": 6,
+    "rule": "Load and PV both repeat the same values for at least 6 consecutive half-hour readings (3 hours) and are not all zero"
+  },
   "azm": {
     "sampling_minutes": 5,
     "targets": {"load": "Load Power", "pv": "Production"},

@@ -7,10 +7,11 @@ import json
 import math
 from pathlib import Path
 
-from .baselines import file_sha256, fit_weekday_profile, predict
-from .evaluation import score
-from .quantiles import quantile_scores, signed_net_series
-from .ridge import build_rows, load_inputs, make_pipeline
+from ..data.preparation import file_sha256
+from ..models.baselines import fit_weekday_profile, predict
+from ..evaluation.metrics import score
+from ..models.quantiles import quantile_scores, signed_net_series
+from ..models.ridge import build_rows, load_inputs, make_pipeline
 
 
 def quantile_model(parameters):

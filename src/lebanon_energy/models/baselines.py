@@ -1,4 +1,4 @@
-"""Approved provisional hourly preparation and midnight-issued baselines.
+"""Midnight-issued baselines and the approved baseline run (preparation is in data/preparation.py).
 
 All values retain their original source units; confirmed units are recorded
 per site. Source clock conventions and meter boundaries remain unverified.
@@ -20,70 +20,11 @@ import re
 import warnings
 from zipfile import ZipFile
 
-from .audit import MONTHS, parse_timestamp
-from .evaluation import score
+from ..data.preparation import _site_records, file_sha256, hourly_means, mask_frozen_readings, source_path
+from ..evaluation.metrics import score
 
 
 METHODS = ("yesterday", "last_week", "weekday_average")
-
-
-def hourly_means(records, *, targets, sampling_minutes, cutoff):
-    """Return per-target complete-hour means and explicit exclusion counts.
-
-    records are (timestamp, {target: original value}) pairs. All nominal slots
-    must occur exactly once, with usable values. Duplicate timestamps raise
-    an error; an hour with multiple records in one slot is excluded. The
-    means use the equal-weight arithmetic averaging approved for this run.
-    """
-    if sampling_minutes <= 0 or 60 % sampling_minutes:
-        raise ValueError("Sampling interval must divide an hour")
-    expected = 60 // sampling_minutes
-    buckets = defaultdict(list)
-    seen = set()
-    included, excluded_test = 0, 0
-    for timestamp, values in records:
-        if timestamp.tzinfo is not None:
-            raise ValueError("This protocol requires unshifted, naive source-clock timestamps")
-        if timestamp >= cutoff:
-            excluded_test += 1
-            continue
-        if timestamp in seen:
-            raise ValueError(f"Repeated source timestamp: {timestamp}")
-        seen.add(timestamp)
-        hour = timestamp.replace(minute=0, second=0, microsecond=0)
-        slot = timestamp.minute // sampling_minutes
-        buckets[hour].append((slot, values))
-        included += 1
-    hourly = {target: {} for target in targets}
-    exclusions = {target: Counter() for target in targets}
-    for hour, samples in sorted(buckets.items()):
-        slots = [slot for slot, _ in samples]
-        complete = len(samples) == expected and set(slots) == set(range(expected))
-        for target in targets:
-            if not complete:
-                exclusions[target]["incomplete_or_repeated_sampling_slots"] += 1
-                continue
-            values = []
-            for _, sample in samples:
-                try:
-                    value = float(sample.get(target))
-                except (TypeError, ValueError):
-                    break
-                if not math.isfinite(value) or value < 0:
-                    break
-                values.append(value)
-            if len(values) != expected:
-                exclusions[target]["missing_nonnumeric_nonfinite_or_negative_value"] += 1
-                continue
-            hourly[target][hour] = math.fsum(values) / expected
-    return hourly, {
-        "included_raw_records": included,
-        "reserved_or_later_raw_records_excluded": excluded_test,
-        "observed_hour_buckets": len(buckets),
-        "expected_readings_per_hour": expected,
-        "exclusions_by_target": {target: dict(counts) for target, counts in exclusions.items()},
-        "retained_hours_by_target": {target: len(series) for target, series in hourly.items()},
-    }
 
 
 def fit_weekday_profile(series, training_end):
@@ -158,73 +99,6 @@ def evaluate_series(series, *, start, end):
     return summary, rows
 
 
-def _read_records(content, label, profile, counters):
-    from openpyxl import load_workbook
-
-    filename_month = next((number for name, number in MONTHS.items() if name in Path(label).name), None)
-    cutoff = datetime.fromisoformat(profile["validation_end_exclusive"])
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", message="Workbook contains no default style")
-        book = load_workbook(io.BytesIO(content), read_only=True, data_only=True)
-    try:
-        if len(book.worksheets) != 1:
-            raise ValueError(f"Expected one measurement worksheet: {label}")
-        rows = book.worksheets[0].iter_rows(values_only=True)
-        headers = list(next(rows))
-        time_index = headers.index("Time")
-        indices = {target: headers.index(column) for target, column in profile["targets"].items()}
-        previous = None
-        for row in rows:
-            if not any(value is not None for value in row):
-                continue
-            timestamp, interpretation = parse_timestamp(row[time_index], filename_month)
-            if timestamp is None:
-                raise ValueError(f"Unresolved source timestamp in {label}: {row[time_index]!r}")
-            counters["timestamp_interpretations"][interpretation] += 1
-            if timestamp >= cutoff:
-                counters["reserved_or_later_rows_not_used"] += 1
-                continue
-            if previous is not None:
-                interval = (timestamp - previous).total_seconds()
-                if interval > 0:
-                    counters["positive_intervals_seconds"][interval] += 1
-            previous = timestamp
-            yield timestamp, {target: row[index] for target, index in indices.items()}
-    finally:
-        book.close()
-
-
-def _site_records(archive, site, profile, counters):
-    label = site["source_label"]
-    matches = [member for member in archive.infolist() if Path(member.filename).name == label]
-    if len(matches) != 1:
-        raise ValueError(f"Expected exactly one source archive member for {site['site_id']}")
-    source = matches[0]
-    if label.lower().endswith(".xlsx"):
-        counters["workbooks_read"] += 1
-        yield from _read_records(archive.read(source), source.filename, profile, counters)
-    elif label.lower().endswith(".zip"):
-        with ZipFile(io.BytesIO(archive.read(source))) as nested:
-            cutoff = datetime.fromisoformat(profile["validation_end_exclusive"])
-            for member in nested.infolist():
-                if not member.filename.lower().endswith(".xlsx"):
-                    continue
-                month = next((number for name, number in MONTHS.items() if name in member.filename), None)
-                years = [int(part) for part in re.findall(r"\b20\d{2}\b", member.filename)]
-                if month is not None and len(years) == 1 and datetime(years[0], month, 1) >= cutoff:
-                    counters["reserved_workbooks_not_opened"].append(member.filename)
-                    continue
-                counters["workbooks_read"] += 1
-                yield from _read_records(nested.read(member), member.filename, profile, counters)
-    else:
-        raise ValueError(f"Unsupported source type: {label}")
-
-
-def file_sha256(path):
-    with Path(path).open("rb") as stream:
-        return hashlib.file_digest(stream, "sha256").hexdigest()
-
-
 def run_experiment(archive_path, configuration, sites):
     if configuration.get("approval_status") != "approved_by_user":
         raise ValueError("The baseline preparation protocol needs user approval")
@@ -258,8 +132,16 @@ def run_experiment(archive_path, configuration, sites):
                         "reserved_or_later_rows_not_used": 0,
                         "workbooks_read": 0, "reserved_workbooks_not_opened": []}
             records = _site_records(archive, site, profile, counters)
+            frozen_rule = configuration.get("frozen_readings")
+            frozen_stretches = None
+            if frozen_rule and site_id in frozen_rule["site_ids"]:
+                records, frozen_stretches = mask_frozen_readings(
+                    records, targets=profile["targets"], sampling_minutes=profile["sampling_minutes"],
+                    minimum_consecutive_readings=frozen_rule["minimum_consecutive_readings"])
             hourly, preparation = hourly_means(records, targets=profile["targets"],
                                                sampling_minutes=profile["sampling_minutes"], cutoff=end)
+            if frozen_stretches is not None:
+                preparation["frozen_stretches_masked"] = frozen_stretches
             intervals = counters["positive_intervals_seconds"]
             if not intervals or intervals.most_common(1)[0][0] != profile["sampling_minutes"] * 60:
                 raise ValueError(f"Observed modal cadence does not match the approved protocol for {site_id}")
@@ -339,7 +221,7 @@ def main():
     sites = json.loads(args.sites.read_text(encoding="utf-8"))["sites"]
     report, hourly, predictions = run_experiment(args.archive, configuration, sites)
     report["code_sha256"] = {path.name: file_sha256(path) for path in (
-        Path(__file__), Path(__file__).with_name("audit.py"), Path(__file__).with_name("evaluation.py"))}
+        Path(__file__), source_path("data.preparation"), source_path("data.audit"), source_path("evaluation.metrics"))}
     report["site_configuration_sha256"] = file_sha256(args.sites)
     report["baseline_configuration_sha256"] = file_sha256(args.config)
     args.output_dir.mkdir(parents=True, exist_ok=True)

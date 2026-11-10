@@ -17,12 +17,31 @@ Acceptance limits remain for the user to decide; no mode is enabled automaticall
 
 Read [the project plan](PROJECT_PLAN.md) and [initial data findings](DATA_AUDIT.md).
 
+## Project structure
+
+Data, features, models, evaluation and serving are kept in separate folders
+under `src/lebanon_energy/`:
+
+| Folder | What it does | Main modules |
+|---|---|---|
+| `data/` | Read the source ZIP, prepare complete hourly data, weather, calendar, data checks | `preparation`, `audit`, `weather`, `azm_weather`, `calendar_days`, `data_checks` |
+| `features/` | Model inputs known at the midnight issue time | `history`, `village` |
+| `models/` | Baselines, Ridge, XGBoost, P90 quantile model, backtests, location-only trial | `baselines`, `ridge`, `boosting`, `quantiles`, `azm_backtest`, `location_trial` |
+| `evaluation/` | Error metrics, daily peak error, wrong-generator hours | `metrics`, `peak_scores`, `generator_choice` |
+| `generators/` | Generator capacities, operating pattern, selection rule | `capacity`, `policy` |
+| `api/` | FastAPI forecast service | `service` |
+| `app/` | Streamlit operator page (Week 2) | |
+
+`scripts/` holds one command per step, `tests/` the unit tests, `config/`
+the settings and decisions, and `outputs/` (not in Git) every generated
+file. [DATA_PROVENANCE.md](DATA_PROVENANCE.md) documents the data.
+
 ## Current tools
 
-- `src/lebanon_energy/audit.py`: inspect the original ZIP and nested workbooks
+- `src/lebanon_energy/data/audit.py`: inspect the original ZIP and nested workbooks
   without extracting or modifying them; report dates, columns, blanks,
   intervals, duplicate data groups, and weather metadata.
-- `src/lebanon_energy/evaluation.py`: paired MAE, RMSE, maximum absolute error,
+- `src/lebanon_energy/evaluation/metrics.py`: paired MAE, RMSE, maximum absolute error,
   and nMAE, with no automatically chosen acceptance threshold.
 - `scripts/compare_modes.py`: compare actual paired experiment predictions
   separately for each site and target.
@@ -30,16 +49,16 @@ Read [the project plan](PROJECT_PLAN.md) and [initial data findings](DATA_AUDIT.
   three approved historical baselines without scoring reserved test months.
 - `scripts/verify_baseline_outputs.py`: independently reconstruct saved
   predictions and reconcile scores, coverage and issue times.
-- `src/lebanon_energy/generators.py`: evaluate explicitly permitted generator
+- `src/lebanon_energy/generators/policy.py`: evaluate explicitly permitted generator
   configurations using supplied usable capacities and reserve margin; flag
   infeasible cases and return tied configurations for operator choice.
 - `config/`: confirmed scope and unresolved site/equipment metadata.
 - `tests/`: evaluation, date-parsing, and generator-constraint checks.
 
-- `src/lebanon_energy/generator_capacity.py` / `scripts/extract_generators.py`:
+- `src/lebanon_energy/generators/capacity.py` / `scripts/extract_generators.py`:
   observed maximum output of each Azm generator and the whole-hour operating
   pattern, written as the draft policy `config/azm_generators.json`.
-- `src/lebanon_energy/generator_choice.py` / `scripts/score_generator_choice.py`:
+- `src/lebanon_energy/evaluation/generator_choice.py` / `scripts/score_generator_choice.py`:
   wrong-generator hours (undersized = overload risk, oversized = wasted fuel)
   for every saved validation forecast. See [GENERATORS.md](GENERATORS.md).
 - `Dockerfile`, `docker-compose.yml`: containerised FastAPI service.
@@ -187,6 +206,17 @@ model replay, training-only preprocessing, errors and issue times have been
 independently checked. The new location-only trial uses a separate nested
 site/time holdout protocol. All development runs keep the reserved test months
 unscored.
+
+## Azm weather
+
+The two Azm weather files in the data ZIP can be re-downloaded and checked
+against the supplied copies with one command (see section 5 of
+[DATA_PROVENANCE.md](DATA_PROVENANCE.md)). The observed file is reproduced;
+the forecast file can no longer be, so the models keep the supplied copy.
+
+```powershell
+.\.venv\Scripts\python.exe scripts/download_azm_weather.py --archive 'Data for EECE 490 Project (1).zip'
+```
 
 ## Village weather
 

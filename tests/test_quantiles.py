@@ -1,6 +1,6 @@
 """Direct net-target alignment and asymmetric quantile scoring."""
 import unittest
-from lebanon_energy.quantiles import quantile_scores, signed_net_series
+from lebanon_energy.models.quantiles import quantile_scores, signed_net_series
 
 
 class QuantileTests(unittest.TestCase):

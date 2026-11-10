@@ -12,7 +12,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 
-from .generators import choice_errors, load_policy
+from ..generators.policy import choice_errors, load_policy
 
 
 def _float(value):

@@ -6,8 +6,8 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from lebanon_energy.boosting import make_pipeline
-from lebanon_energy.ridge import train_group
+from lebanon_energy.models.boosting import make_pipeline
+from lebanon_energy.models.ridge import train_group
 
 
 class BoostingComparisonTests(unittest.TestCase):

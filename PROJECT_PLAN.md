@@ -72,13 +72,13 @@ error cutoff. No percentage threshold has been approved.
 ## Current implementation
 
 - Repeatable ZIP/workbook inspection: `scripts/audit_data.py`.
-- Paired error calculations: `src/lebanon_energy/evaluation.py`.
+- Paired error calculations: `src/lebanon_energy/evaluation/metrics.py`.
 - Prediction comparison command: `scripts/compare_modes.py`.
 - Explicit generator capacity/configuration logic:
-  `src/lebanon_energy/generators.py`.
+  `src/lebanon_energy/generators/policy.py`.
 - Configuration files keep unknown coordinates, units and policy inputs null.
 - Approved complete-hour preparation and three historical baselines:
-  `src/lebanon_energy/baselines.py` and `scripts/run_baselines.py`.
+  `src/lebanon_energy/data/preparation.py`, `src/lebanon_energy/models/baselines.py` and `scripts/run_baselines.py`.
 - Independent saved-output reconciliation: `scripts/verify_baseline_outputs.py`.
 
 The approved hourly dataset, Ridge/XGBoost point forecasts and a first direct

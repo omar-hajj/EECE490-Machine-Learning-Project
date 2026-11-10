@@ -9,12 +9,13 @@ import json
 import math
 from pathlib import Path
 
-from .baselines import METHODS, file_sha256, fit_weekday_profile, predict
-from .boosting import make_pipeline as boosting_pipeline
-from .evaluation import compare_modes, score
-from .ridge import make_pipeline as ridge_pipeline
-from .village import check_holdout, history_features, location_features
-from .weather import VARIABLES
+from ..data.preparation import source_path, file_sha256
+from ..models.baselines import METHODS, fit_weekday_profile, predict
+from ..models.boosting import make_pipeline as boosting_pipeline
+from ..evaluation.metrics import compare_modes, score
+from ..models.ridge import make_pipeline as ridge_pipeline
+from ..features.village import check_holdout, history_features, location_features
+from ..data.weather import VARIABLES
 
 
 def read_prepared(directory, config):
@@ -156,7 +157,7 @@ def main():
     (args.output_dir / 'models').mkdir(exist_ok=True)
     report = {'protocol': config, 'source_sha256': metadata['source_sha256'], 'run_time_utc': datetime.now(timezone.utc).isoformat(),
               'input_sha256': {name: file_sha256(args.prepared_dir / name) for name in ('metadata.json', 'history_kw.csv', 'weather_features.csv')},
-              'code_sha256': {path.name: file_sha256(path) for path in (Path(__file__), Path(__file__).with_name('village.py'), Path(__file__).with_name('features.py'))},
+              'code_sha256': {path.name: file_sha256(path) for path in (Path(__file__), source_path("features.village"), source_path("features.history"))},
               'versions': {name: importlib.metadata.version(name) for name in ('scikit-learn', 'xgboost', 'numpy', 'tzdata')},
               'location_models': [], 'groups': [], 'final_test_scored': False, 'municipality_included': False,
               'acceptance_status': 'awaiting_user_limits_after_measured_comparison', 'deployment_model_selected': False,

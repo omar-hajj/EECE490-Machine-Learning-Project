@@ -8,8 +8,8 @@ import json
 import math
 from pathlib import Path
 
-from .baselines import file_sha256
-from .ridge import build_rows, load_inputs
+from ..data.preparation import source_path, file_sha256
+from ..models.ridge import build_rows, load_inputs
 
 
 def quantile_scores(actual, predicted, quantile):
@@ -99,7 +99,7 @@ def main():
               "generator_recommendations_generated": False,
               "input_sha256": {"hourly_data.csv": file_sha256(args.baseline_dir / "hourly_data.csv"),
                                "sites.json": file_sha256(args.sites), "config.json": file_sha256(args.config)},
-              "code_sha256": {path.name: file_sha256(path) for path in (Path(__file__), Path(__file__).with_name("features.py"), Path(__file__).with_name("ridge.py"))},
+              "code_sha256": {path.name: file_sha256(path) for path in (Path(__file__), source_path("features.history"), source_path("models.ridge"))},
               "limitations": ["Validation-tuned upper estimate, not final-test calibration.",
                               "P90 is an individual-hour target; it does not guarantee all 24 hours or instantaneous peaks.",
                               "Signed net load can be negative. No export, storage or grid-availability behavior is inferred.",

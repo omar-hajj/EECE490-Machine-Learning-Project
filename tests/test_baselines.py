@@ -7,7 +7,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lebanon_energy.baselines import evaluate_series, fit_weekday_profile, hourly_means, predict
+from lebanon_energy.data.preparation import hourly_means
+from lebanon_energy.models.baselines import evaluate_series, fit_weekday_profile, predict
 
 
 class HourlyPreparationTests(unittest.TestCase):

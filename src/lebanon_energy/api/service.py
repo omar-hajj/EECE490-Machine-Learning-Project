@@ -8,8 +8,8 @@ from zoneinfo import ZoneInfo
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from .baselines import predict
-from .features import history_calendar_features
+from ..models.baselines import predict
+from ..features.history import history_calendar_features
 
 
 class Reading(BaseModel):

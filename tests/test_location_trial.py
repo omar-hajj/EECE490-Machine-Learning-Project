@@ -4,9 +4,9 @@ import io
 import unittest
 from unittest.mock import MagicMock
 
-from lebanon_energy.location_trial import feature_row, tune_refit
-from lebanon_energy.village import check_holdout, load_series_kw
-from lebanon_energy.weather import VARIABLES
+from lebanon_energy.models.location_trial import feature_row, tune_refit
+from lebanon_energy.features.village import check_holdout, load_series_kw
+from lebanon_energy.data.weather import VARIABLES
 
 
 def entry(timestamp):

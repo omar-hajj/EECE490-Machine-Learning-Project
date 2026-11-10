@@ -58,6 +58,44 @@ scores are retained. A separate confirmed-kW six-site unseen-site experiment
 is now documented in `LOCATION_ONLY_RESULTS.md`. Duplicated Household 1/2
 months prevent treating all source records as independent evidence.
 
+## Daily peak error (added November 10, 2026)
+
+The roadmap asks for "MAE, RMSE, peak error". The tables above report the
+largest error in any single hour. Since the generator must cover each day's
+highest load, we also score **daily peak error**: for each day, the forecast
+daily maximum minus the actual daily maximum. A negative value is an
+under-forecast, the overload-risk direction. All methods use the same hours,
+and only days with all 24 hours are scored. Reproduce with
+`scripts/score_daily_peaks.py`; results are in `outputs/peak_scores/`.
+
+**Azm, August 2026 (load, kW, 22 complete days):**
+
+| Method | nMAE | Largest hourly error | Daily peak error | Under-forecast days | Peak hour off |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Yesterday | 28.2% | 235 | 111 | 9 of 22 | 3.3 h |
+| Last week | 17.3% | 210 | 48 | 15 of 22 | 2.8 h |
+| Weekday average | 16.6% | 207 | **37** | 12 of 22 | 2.8 h |
+| Ridge | **15.6%** | **189** | 50 | 12 of 22 | **1.8 h** |
+| XGBoost | 16.8% | 196 | 54 | 14 of 22 | 2.7 h |
+
+**Household 3, June 2025 (load, W, 30 complete days):**
+
+| Method | nMAE | Largest hourly error | Daily peak error | Under-forecast days | Peak hour off |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Yesterday | 55.2% | 2,902 | 672 | 18 of 30 | 3.4 h |
+| Last week | 53.6% | 3,390 | **658** | 18 of 30 | 3.1 h |
+| Weekday average | 50.7% | 3,157 | 1,233 | 29 of 30 | **2.5 h** |
+| Ridge | 46.3% | **2,765** | 839 | 27 of 30 | 3.2 h |
+| XGBoost | **45.7%** | 3,258 | 947 | 26 of 30 | 3.0 h |
+
+The best method depends on the metric. At Azm, the weekday average predicts
+the size of the daily peak best, while Ridge has the smallest worst hour and
+gets the peak's timing closest. At Household 3, the weekday average
+under-forecasts the peak on 29 of 30 days, because averaging smooths a
+home's irregular spikes. The ML models also under-forecast most peaks there.
+A school's regular timetable makes averages work; a home's does not.
+Validation results only; final test months unscored.
+
 ## Direct P90 estimate of the remaining requirement
 
 The user confirmed that `Load Power` is total campus demand including demand

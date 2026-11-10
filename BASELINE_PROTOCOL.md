@@ -69,3 +69,24 @@ After the first run, the user confirmed that Azm `Production` is solar PV,
 `Load Power` is campus load, and both are in kW. Its target label is now `pv`;
 the original source column name remains recorded. This metadata correction
 does not change the aggregation rules, predictions, errors, or reserved test.
+
+## Amendment, November 10, 2026: Household 3 meter freeze
+
+Rule 4 above kept frozen readings. One exception was decided after
+inspecting Household 3 (roadmap Week 1: "mark frozen readings as missing"):
+
+- From 2025-04-04 19:30 to 2025-04-05 04:00 all four Household 3 channels
+  (load, grid, PV, battery) repeat exactly the same values for 18 half-hour
+  readings (9 hours). A working meter cannot do that, so these readings are
+  now treated as missing. The complete-hour rule then drops 10 hours
+  (6,551 to 6,541 retained hours per target).
+- Two December 2024 stretches where only the battery shows -20 W for
+  5.5 hours were kept: the other channels keep changing and neighbouring
+  readings are -19/-21 W, so this is standby draw, not a freeze.
+- Implementation: `frozen_readings` in `config/baseline.json` and
+  `mask_frozen_readings` in `src/lebanon_energy/data/preparation.py`. The rule masks
+  stretches where load and PV both repeat for at least 6 consecutive
+  readings and are not all zero. It is enabled for Household 3 only, and
+  `results.json` lists every masked stretch.
+- Effect on June 2025 validation nMAE for Household 3 is below 0.1
+  percentage point for every method; no other site changed.

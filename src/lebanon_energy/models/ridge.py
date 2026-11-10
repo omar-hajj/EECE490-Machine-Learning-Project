@@ -16,9 +16,10 @@ import math
 from pathlib import Path
 import re
 
-from .baselines import METHODS, file_sha256
-from .evaluation import score
-from .features import history_calendar_features
+from ..data.preparation import source_path, file_sha256
+from ..models.baselines import METHODS
+from ..evaluation.metrics import score
+from ..features.history import history_calendar_features
 
 
 def load_inputs(directory):
@@ -202,7 +203,7 @@ def _write_summary(report):
 
 
 def load_weather(path, groups):
-    from .weather import VARIABLES
+    from ..data.weather import VARIABLES
 
     metadata = json.loads(path.with_name("metadata.json").read_text())
     if not metadata["clock_confirmed_by_user"] or metadata["meter_clock"] != "Asia/Beirut":
@@ -262,7 +263,7 @@ def main():
         "input_sha256": {name: file_sha256(args.baseline_dir / name) for name in ("results.json", "hourly_data.csv", "validation_predictions.csv")},
         "configuration_sha256": file_sha256(args.config),
         "code_sha256": {path.name: file_sha256(path) for path in (
-            Path(__file__), Path(__file__).with_name("features.py"), Path(__file__).with_name("evaluation.py"))},
+            Path(__file__), source_path("features.history"), source_path("evaluation.metrics"))},
         "test_period_scored": False, "weather_used": weather is not None, "location_only_evaluated": False,
         "warnings": [
             "Validation was used to tune alpha; improvements require confirmation on the untouched final test.",
@@ -279,7 +280,7 @@ def main():
         report["weather_alignment_metadata"] = weather_metadata
         report["weather_input_sha256"] = {"features.csv": file_sha256(args.weather_features),
                                           "metadata.json": file_sha256(args.weather_features.with_name("metadata.json"))}
-        report["code_sha256"]["weather.py"] = file_sha256(Path(__file__).with_name("weather.py"))
+        report["code_sha256"]["weather.py"] = file_sha256(source_path("data.weather"))
     all_rows = []
     with threadpool_limits(limits=1):
         for key, group in groups.items():

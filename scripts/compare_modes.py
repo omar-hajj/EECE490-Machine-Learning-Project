@@ -14,7 +14,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lebanon_energy.evaluation import compare_modes
+from lebanon_energy.evaluation.metrics import compare_modes
 
 
 def compare_csv(path):

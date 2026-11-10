@@ -40,6 +40,36 @@ def score(actual: Iterable[float], predicted: Iterable[float]) -> Scores:
     )
 
 
+def daily_peak_scores(rows, hours_per_day: int = 24) -> dict:
+    """How well each day's highest load is forecast (roadmap "peak error").
+
+    rows are (timestamp, actual, predicted). Only days with all hours_per_day
+    hours are scored, so a missing afternoon cannot hide the real peak. For
+    each day, peak error = forecast daily maximum - actual daily maximum
+    (negative = under-forecast, the overload-risk direction), and timing error
+    = hours between the forecast and actual peak hours.
+    """
+    by_day = {}
+    for timestamp, observed, prediction in rows:
+        if not (math.isfinite(observed) and math.isfinite(prediction)):
+            raise ValueError("Peak scoring requires finite values")
+        by_day.setdefault(timestamp.date(), []).append((timestamp, observed, prediction))
+    days = {day: values for day, values in by_day.items() if len({t.hour for t, _, _ in values}) == hours_per_day}
+    if not days:
+        raise ValueError("No complete days to score")
+    errors, timing = [], []
+    for values in days.values():
+        actual_peak = max(values, key=lambda item: item[1])
+        forecast_peak = max(values, key=lambda item: item[2])
+        errors.append(forecast_peak[2] - actual_peak[1])
+        timing.append(abs(forecast_peak[0].hour - actual_peak[0].hour))
+    return {"complete_days": len(days), "days_skipped_incomplete": len(by_day) - len(days),
+            "mean_absolute_peak_error": math.fsum(abs(e) for e in errors) / len(errors),
+            "largest_peak_error": max(errors, key=abs),
+            "under_forecast_days": sum(e < 0 for e in errors),
+            "mean_peak_hour_offset": math.fsum(timing) / len(timing)}
+
+
 def compare_modes(
     actual: Iterable[float], history_predictions: Iterable[float],
     location_predictions: Iterable[float], *,

@@ -7,8 +7,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lebanon_energy.features import history_calendar_features
-from lebanon_energy.ridge import build_rows, make_pipeline
+from lebanon_energy.features.history import history_calendar_features
+from lebanon_energy.models.ridge import build_rows, make_pipeline
 
 
 class HistoryFeatureTests(unittest.TestCase):

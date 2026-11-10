@@ -2,8 +2,8 @@
 from datetime import datetime, timedelta
 import unittest
 from fastapi.testclient import TestClient
-from lebanon_energy.api import create_app
-from lebanon_energy.azm_backtest import residual_correction
+from lebanon_energy.api.service import create_app
+from lebanon_energy.models.azm_backtest import residual_correction
 
 
 class ConstantModel:

@@ -18,7 +18,7 @@ import math
 from pathlib import Path
 from zipfile import ZipFile
 
-from .baselines import _site_records, file_sha256
+from ..data.preparation import _site_records, file_sha256
 
 GENERATOR_IDS = ("G1", "G2", "G3", "G4")
 SAMPLING_MINUTES = 5
@@ -135,6 +135,63 @@ def summarize(records, generator_ids=GENERATOR_IDS, samples_per_hour=60 // SAMPL
             "power_balance_rows_checked": balance_checked,
             "power_balance_within_10pct_share": balance_within / balance_checked if balance_checked else None,
             "units": units, "configurations": configurations}
+
+
+def hourly_generator_table(records, generator_ids=GENERATOR_IDS, sampling_minutes=SAMPLING_MINUTES):
+    """One row per complete hour: each unit's mean kW, share of the hour running, and the configuration.
+
+    Same complete-hour rule as the load data: exactly one reading in each
+    5-minute slot, with every generator's power and status present.
+    configuration is the running units (for example "G1+G4") when they did
+    not change during the hour, and "mixed" when they did (handovers).
+    Returns (rows, exclusion counts).
+    """
+    expected = 60 // sampling_minutes
+    hours = defaultdict(list)
+    for timestamp, values in records:
+        hours[timestamp.replace(minute=0, second=0, microsecond=0)].append((timestamp.minute // sampling_minutes, values))
+    rows, excluded = [], Counter()
+    for hour, samples in sorted(hours.items()):
+        if len(samples) != expected or {slot for slot, _ in samples} != set(range(expected)):
+            excluded["incomplete_or_repeated_sampling_slots"] += 1
+            continue
+        if any(values.get(f"{g}_{part}") is None for _, values in samples for g in generator_ids for part in ("kw", "status")):
+            excluded["missing_generator_value"] += 1
+            continue
+        row = {"timestamp_local": hour.isoformat()}
+        for g in generator_ids:
+            row[f"{g}_kw"] = math.fsum(values[f"{g}_kw"] for _, values in samples) / expected
+        for g in generator_ids:
+            row[f"{g}_running_share"] = sum(values[f"{g}_status"] == 1 for _, values in samples) / expected
+        configurations = {tuple(g for g in generator_ids if values[f"{g}_status"] == 1) for _, values in samples}
+        row["configuration"] = configuration_label(next(iter(configurations))) if len(configurations) == 1 else "mixed"
+        rows.append(row)
+    return rows, dict(excluded)
+
+
+def main_hourly():
+    parser = argparse.ArgumentParser(description="Write hourly generator power, running share and configuration for Azm.")
+    parser.add_argument("--archive", type=Path, required=True)
+    parser.add_argument("--sites", type=Path, default=Path("config/sites.json"))
+    parser.add_argument("--output-dir", type=Path, default=Path("outputs/generators"))
+    args = parser.parse_args()
+    cutoff = datetime(2026, 9, 1)  # September stays reserved
+    site = next(s for s in json.loads(args.sites.read_text(encoding="utf-8"))["sites"] if s["site_id"] == "azm")
+    rows, excluded = hourly_generator_table(read_records(args.archive, site, cutoff))
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    import csv
+    with (args.output_dir / "azm_hourly_generators.csv").open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    configurations = Counter(row["configuration"] for row in rows)
+    summary = {"hours": len(rows), "excluded_hours": excluded, "configurations": dict(configurations.most_common()),
+               "data_end_exclusive": cutoff.isoformat(), "source_sha256": file_sha256(args.archive)}
+    (args.output_dir / "azm_hourly_generators_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(f"{len(rows)} complete hours written; excluded: {excluded}")
+    for label, count in configurations.most_common():
+        print(f"  {label:10s} {count:5d} hours")
+    print(f"Wrote {args.output_dir / 'azm_hourly_generators.csv'}")
 
 
 def draft_policy(summary, *, minimum_whole_hours=3, reserve_margin_fraction=0.10):

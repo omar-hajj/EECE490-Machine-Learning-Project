@@ -8,9 +8,9 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lebanon_energy.audit import parse_timestamp
-from lebanon_energy.evaluation import compare_modes, score
-from lebanon_energy.generators import Generator, recommend
+from lebanon_energy.data.audit import parse_timestamp
+from lebanon_energy.evaluation.metrics import compare_modes, score
+from lebanon_energy.generators.policy import Generator, recommend
 
 
 class EvaluationTests(unittest.TestCase):

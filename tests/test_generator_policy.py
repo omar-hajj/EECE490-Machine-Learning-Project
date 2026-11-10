@@ -9,9 +9,9 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lebanon_energy.generator_capacity import draft_policy, summarize
-from lebanon_energy.generator_choice import net_from_targets, score_methods
-from lebanon_energy.generators import Generator, choice_errors, load_policy
+from lebanon_energy.generators.capacity import draft_policy, hourly_generator_table, summarize
+from lebanon_energy.evaluation.generator_choice import net_from_targets, score_methods
+from lebanon_energy.generators.policy import Generator, choice_errors, load_policy
 
 UNITS = [Generator("small", 100), Generator("medium", 200), Generator("large", 400)]
 ALLOWED = [["small"], ["medium"], ["large"], ["medium", "large"]]
@@ -95,6 +95,21 @@ class CapacityExtractionTests(unittest.TestCase):
         self.assertEqual([g.generator_id for g in generators], ["G1", "G2"])
         self.assertEqual(margin, 0.10)
         self.assertEqual(allowed[:2], [["G1"], ["G2"]])
+
+
+class HourlyGeneratorTableTests(unittest.TestCase):
+    def test_steady_handover_and_incomplete_hours(self):
+        start = datetime(2026, 5, 4, 8)
+        steady = _records(start, 1, {"G1"}, 90.0)
+        handover = _records(start + timedelta(hours=1), 1, {"G1"}, 90.0)
+        for _, values in handover[6:]:          # G2 takes over for the second half hour
+            values.update({"G1_kw": 0.0, "G1_status": 0.0, "G2_kw": 150.0, "G2_status": 1.0})
+        incomplete = _records(start + timedelta(hours=2), 1, {"G2"}, 150.0)[:11]
+        rows, excluded = hourly_generator_table(steady + handover + incomplete, generator_ids=("G1", "G2"))
+        self.assertEqual([r["configuration"] for r in rows], ["G1", "mixed"])
+        self.assertEqual((rows[1]["G1_running_share"], rows[1]["G2_running_share"]), (0.5, 0.5))
+        self.assertAlmostEqual(rows[1]["G2_kw"], 75.0)
+        self.assertEqual(excluded, {"incomplete_or_repeated_sampling_slots": 1})
 
 
 class MethodComparisonTests(unittest.TestCase):

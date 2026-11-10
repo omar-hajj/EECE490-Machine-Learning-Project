@@ -7,8 +7,8 @@ import importlib.metadata
 import json
 from pathlib import Path
 
-from .baselines import file_sha256
-from .ridge import load_inputs, load_weather, train_group
+from ..data.preparation import source_path, file_sha256
+from ..models.ridge import load_inputs, load_weather, train_group
 
 
 def make_pipeline(**parameters):
@@ -54,7 +54,7 @@ def main():
         "model": "XGBoost", "run_time_utc": datetime.now(timezone.utc).isoformat(),
         "configuration": configuration, "source_sha256": baseline_report["source_sha256"],
         "input_sha256": {name: file_sha256(args.baseline_dir / name) for name in ("results.json", "hourly_data.csv", "validation_predictions.csv")},
-        "code_sha256": {path.name: file_sha256(path) for path in (Path(__file__), Path(__file__).with_name("ridge.py"), Path(__file__).with_name("features.py"), Path(__file__).with_name("evaluation.py"))},
+        "code_sha256": {path.name: file_sha256(path) for path in (Path(__file__), source_path("models.ridge"), source_path("features.history"), source_path("evaluation.metrics"))},
         "configuration_sha256": file_sha256(args.config),
         "versions": {name: importlib.metadata.version(name) for name in ("xgboost", "scikit-learn", "numpy", "joblib")},
         "weather_used": weather is not None, "test_period_scored": False,

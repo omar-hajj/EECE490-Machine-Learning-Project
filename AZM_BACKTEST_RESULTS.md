@@ -61,7 +61,7 @@ Run from the project folder:
 ```powershell
 .\.venv\Scripts\python.exe scripts/backtest_azm.py
 .\.venv\Scripts\python.exe scripts/verify_azm_backtest.py
-.\.venv\Scripts\python.exe -m uvicorn lebanon_energy.api:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m uvicorn lebanon_energy.api.service:app --host 127.0.0.1 --port 8000
 ```
 
 Open [the API documentation](http://127.0.0.1:8000/docs). `GET /health` checks

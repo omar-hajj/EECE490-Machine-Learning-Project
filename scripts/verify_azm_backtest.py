@@ -7,11 +7,11 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 import joblib
 from fastapi.testclient import TestClient
-from lebanon_energy.api import create_app
-from lebanon_energy.baselines import file_sha256
-from lebanon_energy.features import history_calendar_features
-from lebanon_energy.quantiles import signed_net_series
-from lebanon_energy.ridge import load_inputs
+from lebanon_energy.api.service import create_app
+from lebanon_energy.data.preparation import file_sha256
+from lebanon_energy.features.history import history_calendar_features
+from lebanon_energy.models.quantiles import signed_net_series
+from lebanon_energy.models.ridge import load_inputs
 
 
 def main():

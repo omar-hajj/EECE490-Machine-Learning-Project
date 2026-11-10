@@ -7,8 +7,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lebanon_energy.weather import VARIABLES, aligned_features
-from lebanon_energy.ridge import model_features
+from lebanon_energy.data.weather import VARIABLES, aligned_features
+from lebanon_energy.models.ridge import model_features
 
 
 class WeatherAlignmentTests(unittest.TestCase):
