@@ -1,0 +1,56 @@
+{
+  "status": "draft_from_observed_data_pending_school_confirmation",
+  "generators": [
+    {
+      "generator_id": "G1",
+      "usable_capacity_kw": 413.4,
+      "capacity_basis": "highest observed 5-minute output (lower bound on rating)"
+    },
+    {
+      "generator_id": "G2",
+      "usable_capacity_kw": 236.8,
+      "capacity_basis": "highest observed 5-minute output (lower bound on rating)"
+    },
+    {
+      "generator_id": "G3",
+      "usable_capacity_kw": 146.1,
+      "capacity_basis": "highest observed 5-minute output (lower bound on rating)"
+    },
+    {
+      "generator_id": "G4",
+      "usable_capacity_kw": 315.0,
+      "capacity_basis": "highest observed 5-minute output (lower bound on rating)"
+    }
+  ],
+  "allowed_configurations": [
+    [
+      "G1"
+    ],
+    [
+      "G2"
+    ],
+    [
+      "G3"
+    ],
+    [
+      "G4"
+    ],
+    [
+      "G1",
+      "G4"
+    ],
+    [
+      "G2",
+      "G3",
+      "G4"
+    ]
+  ],
+  "reserve_margin_fraction": 0.1,
+  "parallel_rule": "parallel combinations observed for at least 3 whole hours",
+  "selection_rule": "Run the smallest allowed configuration whose capacity covers the forecast net load (load minus PV) times (1 + reserve margin); ties go to the operator.",
+  "site_id": "azm",
+  "unit": "kW",
+  "derived_from": "scripts/extract_generators.py",
+  "data_end_exclusive": "2026-09-01T00:00:00",
+  "source_sha256": "f7de0f76ca533604134a4968be672c53c49116a37c860babd9bdb15c23b367aa"
+}

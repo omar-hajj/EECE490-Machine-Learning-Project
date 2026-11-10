@@ -36,9 +36,32 @@ Read [the project plan](PROJECT_PLAN.md) and [initial data findings](DATA_AUDIT.
 - `config/`: confirmed scope and unresolved site/equipment metadata.
 - `tests/`: evaluation, date-parsing, and generator-constraint checks.
 
+- `src/lebanon_energy/generator_capacity.py` / `scripts/extract_generators.py`:
+  observed maximum output of each Azm generator and the whole-hour operating
+  pattern, written as the draft policy `config/azm_generators.json`.
+- `src/lebanon_energy/generator_choice.py` / `scripts/score_generator_choice.py`:
+  wrong-generator hours (undersized = overload risk, oversized = wasted fuel)
+  for every saved validation forecast. See [GENERATORS.md](GENERATORS.md).
+- `Dockerfile`, `docker-compose.yml`: containerised FastAPI service.
+- [CONTRIBUTIONS.md](CONTRIBUTIONS.md): who did what (required for submission).
+
 Ridge/XGBoost training, saved-model verification, forecast-weather alignment
-and P90 experiments are implemented. FastAPI, Streamlit, Docker and automatic
-weather retrieval remain planned work. No production model has been selected.
+and P90 experiments are implemented. Streamlit and automatic Azm weather
+retrieval remain planned work. No production model has been selected.
+
+## Generator rule and Docker
+
+```powershell
+.\.venv\Scripts\python.exe scripts/extract_generators.py --archive 'Data for EECE 490 Project (1).zip'
+.\.venv\Scripts\python.exe scripts/score_generator_choice.py
+docker compose up --build
+```
+
+The first command reads Azm rows before September 1 only. The second needs
+the baseline, Ridge, XGBoost and P90 runs listed above. The compose file
+mounts `outputs/azm_backtest/` (built by `scripts/backtest_azm.py`) into the
+container; the API is then at http://localhost:8000/docs. Build that model
+with the pinned versions in `requirements-serve.lock.txt` so it unpickles.
 
 ## Model experiments
 
@@ -104,6 +127,15 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e . --no-deps
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe scripts/audit_data.py --archive 'Data for EECE 490 Project (1).zip' --output outputs/data_audit.json
+```
+
+If pip cannot reach `files.pythonhosted.org` (this happened on the AUB
+network on November 10), a conda environment from Anaconda's default channel
+gives the same scikit-learn 1.9.1 / numpy 2.5.4 / XGBoost 3.4.1 versions:
+
+```powershell
+conda create -n eece490 --override-channels -c defaults python=3.12 openpyxl scikit-learn py-xgboost fastapi uvicorn httpx joblib threadpoolctl tzdata pandas plotly streamlit
+conda run -n eece490 python -m pip install -e . --no-deps --no-build-isolation
 ```
 
 The audit reads the supplied archive directly. The large optional external

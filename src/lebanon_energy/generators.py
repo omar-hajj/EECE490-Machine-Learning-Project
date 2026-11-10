@@ -1,8 +1,10 @@
 """Capacity planning with explicit equipment and operating policy inputs.
 
-This module does not infer ratings from observed peaks or choose a reserve
-margin. An hourly recommendation does not certify instantaneous overload
-protection, fuel optimality, switching feasibility, or electrical protection.
+This module does not itself infer ratings or choose a reserve margin; the
+draft Azm inputs come from generator_capacity.py (observed maxima) and are
+supplied explicitly. An hourly recommendation does not certify instantaneous
+overload protection, fuel optimality, switching feasibility, or electrical
+protection.
 """
 
 from dataclasses import dataclass
@@ -65,3 +67,70 @@ def recommend(
     return {"status": "capacity_candidates_available", "required_capacity_kw": required_kw,
             "candidate_configurations": [list(item) for item in candidates],
             "selected_capacity_kw": smallest_capacity}
+
+
+def load_policy(path):
+    """Read a generator policy JSON (for example config/azm_generators.json)."""
+    import json
+    from pathlib import Path
+
+    policy = json.loads(Path(path).read_text(encoding="utf-8"))
+    generators = [Generator(item["generator_id"], float(item["usable_capacity_kw"]), item.get("available", True))
+                  for item in policy["generators"]]
+    return generators, policy["allowed_configurations"], float(policy["reserve_margin_fraction"])
+
+
+def choice_errors(actual_net_kw, forecast_net_kw, generators, *, allowed_configurations, reserve_margin_fraction):
+    """Use-linked metric: hours where the forecast picks the wrong generator size.
+
+    For each hour the forecast picks the smallest allowed configuration that
+    covers forecast net load x (1 + reserve margin). The configuration that
+    was actually needed is the smallest one covering the actual net load with
+    no margin. The pick is:
+
+    - undersized (overload risk) when its capacity is below the actual net load;
+    - oversized (wasted fuel) when its capacity exceeds the needed capacity;
+    - right-sized otherwise.
+
+    Negative net values (PV surplus) are treated as zero demand on the
+    generators. Hours whose actual or forecast need exceeds every allowed
+    configuration are counted separately as infeasible.
+    """
+    actual, forecast = list(actual_net_kw), list(forecast_net_kw)
+    if not actual or len(actual) != len(forecast):
+        raise ValueError("Actual and forecast net load must be nonempty and equally long")
+    if any(not math.isfinite(value) for value in actual + forecast):
+        raise ValueError("Net load values must be finite")
+    equipment = list(generators)
+    configurations = [list(c) for c in allowed_configurations]
+    counts = {"undersized_hours": 0, "oversized_hours": 0, "right_sized_hours": 0,
+              "infeasible_actual_hours": 0, "infeasible_forecast_hours": 0}
+    shortfall_kwh, excess_capacity_kwh = 0.0, 0.0
+    for truth, estimate in zip(actual, forecast):
+        truth, estimate = max(truth, 0.0), max(estimate, 0.0)
+        picked = recommend(estimate, equipment, allowed_configurations=configurations,
+                           reserve_margin_fraction=reserve_margin_fraction)["selected_capacity_kw"]
+        needed = recommend(truth, equipment, allowed_configurations=configurations,
+                           reserve_margin_fraction=0.0)["selected_capacity_kw"]
+        if picked is None:
+            counts["infeasible_forecast_hours"] += 1
+            continue
+        if needed is None:
+            counts["infeasible_actual_hours"] += 1
+            counts["undersized_hours"] += 1
+            shortfall_kwh += truth - picked
+            continue
+        if picked < truth:
+            counts["undersized_hours"] += 1
+            shortfall_kwh += truth - picked
+        elif picked > needed:
+            counts["oversized_hours"] += 1
+            excess_capacity_kwh += picked - needed
+        else:
+            counts["right_sized_hours"] += 1
+    hours = len(actual)
+    return {"hours": hours, **counts,
+            "undersized_share": counts["undersized_hours"] / hours,
+            "oversized_share": counts["oversized_hours"] / hours,
+            "right_sized_share": counts["right_sized_hours"] / hours,
+            "shortfall_kwh": shortfall_kwh, "excess_capacity_kwh": excess_capacity_kwh}

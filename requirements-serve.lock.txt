@@ -1,0 +1,29 @@
+# Packages needed to serve the FastAPI demo (Docker image). Same pins as
+# requirements-api.lock.txt / requirements-modeling.lock.txt, minus XGBoost,
+# which only training needs. The joblib model must be built with these
+# scikit-learn/numpy versions so it unpickles inside the container.
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.16.0
+certifi==2026.10.23
+click==8.5.1
+fastapi==0.162.2
+h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
+idna==3.20
+joblib==1.6.0
+numpy==2.5.4
+openpyxl==3.1.5
+et_xmlfile==2.0.0
+opentelemetry-api==1.45.2
+pydantic==2.14.3
+pydantic_core==2.50.4
+scikit-learn==1.9.1
+scipy==1.18.1
+starlette==1.10.0
+threadpoolctl==3.8.0
+typing-inspection==0.4.5
+typing_extensions==4.16.0
+tzdata==2026.6
+uvicorn==0.54.0
