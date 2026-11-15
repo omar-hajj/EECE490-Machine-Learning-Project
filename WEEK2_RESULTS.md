@@ -200,9 +200,10 @@ what the API returns.
   [FINAL_RESULTS.md](FINAL_RESULTS.md).
 - Done since (see `WEEK3_ANALYSIS.md`): Household 3 transfer check, error
   analysis, Why panel, Backtest page, Failure gallery.
-- **Docker**: `Dockerfile.app` and the two-service `docker-compose.yml` are
-  written but were not built on the machine used on November 15 (Docker is
-  not installed there). Build them before the Week 2 gate.
+- **Docker**: built and run on November 16 (Docker Desktop 4.99, engine
+  29.9.3). `docker compose up --build` built both images without changes;
+  the API reported healthy, `/forecast` answered, and the page's three
+  views (Tomorrow, Backtest, Failure gallery) rendered from the containers.
 - **School answers** still missing: real ratings, allowed combinations,
   reserve margin, minimum run time, academic calendar, publication
   permission.
