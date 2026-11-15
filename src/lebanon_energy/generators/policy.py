@@ -103,13 +103,24 @@ def choice_errors(actual_net_kw, forecast_net_kw, generators, *, allowed_configu
         raise ValueError("Net load values must be finite")
     equipment = list(generators)
     configurations = [list(c) for c in allowed_configurations]
+    picks = []
+    for estimate in forecast:
+        picks.append(recommend(max(estimate, 0.0), equipment, allowed_configurations=configurations,
+                               reserve_margin_fraction=reserve_margin_fraction)["selected_capacity_kw"])
+    return pick_errors(actual, picks, equipment, allowed_configurations=configurations)
+
+
+def pick_errors(actual_net_kw, picked_capacity_kw, generators, *, allowed_configurations):
+    """Score capacities that were picked (None = nothing feasible) against the actual net load."""
+    actual, picks = list(actual_net_kw), list(picked_capacity_kw)
+    if not actual or len(actual) != len(picks):
+        raise ValueError("Actual net load and picks must be nonempty and equally long")
+    equipment, configurations = list(generators), [list(c) for c in allowed_configurations]
     counts = {"undersized_hours": 0, "oversized_hours": 0, "right_sized_hours": 0,
               "infeasible_actual_hours": 0, "infeasible_forecast_hours": 0}
     shortfall_kwh, excess_capacity_kwh = 0.0, 0.0
-    for truth, estimate in zip(actual, forecast):
-        truth, estimate = max(truth, 0.0), max(estimate, 0.0)
-        picked = recommend(estimate, equipment, allowed_configurations=configurations,
-                           reserve_margin_fraction=reserve_margin_fraction)["selected_capacity_kw"]
+    for truth, picked in zip(actual, picks):
+        truth = max(truth, 0.0)
         needed = recommend(truth, equipment, allowed_configurations=configurations,
                            reserve_margin_fraction=0.0)["selected_capacity_kw"]
         if picked is None:
@@ -134,3 +145,33 @@ def choice_errors(actual_net_kw, forecast_net_kw, generators, *, allowed_configu
             "oversized_share": counts["oversized_hours"] / hours,
             "right_sized_share": counts["right_sized_hours"] / hours,
             "shortfall_kwh": shortfall_kwh, "excess_capacity_kwh": excess_capacity_kwh}
+
+
+def hold_short_dips(capacities, minimum_hours):
+    """Avoid switching down to a smaller configuration for only an hour or two.
+
+    A run of hours shorter than `minimum_hours` that sits between two larger
+    capacities is raised to the smaller of its neighbours. Capacity is only
+    ever raised, so this cannot create an overload. None (no recommendation)
+    is left alone and is never bridged.
+    """
+    values = list(capacities)
+    if minimum_hours <= 1:
+        return values
+    changed = True
+    while changed:
+        changed = False
+        start = 0
+        while start < len(values):
+            end = start
+            while end + 1 < len(values) and values[end + 1] == values[start]:
+                end += 1
+            before = values[start - 1] if start > 0 else None
+            after = values[end + 1] if end + 1 < len(values) else None
+            current = values[start]
+            if (current is not None and before is not None and after is not None
+                    and end - start + 1 < minimum_hours and before > current and after > current):
+                values[start:end + 1] = [min(before, after)] * (end - start + 1)
+                changed = True
+            start = end + 1
+    return values

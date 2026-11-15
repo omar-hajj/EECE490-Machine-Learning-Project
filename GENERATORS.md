@@ -95,16 +95,19 @@ August validation, 734 hours shared by every method, margin 10%:
 
 ## Next steps
 
-1. Score the same metric on the May–July backtests, where load is higher, to
-   get a less one-sided comparison before the September test.
-2. Week 2 (C): serve the recommendation in `/forecast` (P90 net × margin) and
-   show it in the Tomorrow view's colour-coded generator strip.
-3. Confirm the ratings, allowed combinations and margin with the school. Then
-   replace the observed maxima and flip the policy status.
+1. Done (November 15): the metric is scored on every day from May to August
+   in the rolling-origin check, and compared with what the operator actually
+   ran. See [WEEK2_RESULTS.md](WEEK2_RESULTS.md).
+2. Done (November 15): `/forecast` serves the recommendation (upper estimate
+   of net load × margin, with a 3-hour minimum run) and the operator page
+   shows it as the hour-by-hour strip.
+3. Confirm the ratings, allowed combinations, margin and minimum run time
+   with the school. Then replace the observed maxima and flip the policy
+   status.
 
 Reproduce:
 
 ```powershell
-python scripts/extract_generators.py --archive 'Data for EECE 490 Project (1).zip'
+python scripts/extract_generators.py --archive '..\Data for EECE 490 Project.zip'
 python scripts/score_generator_choice.py
 ```

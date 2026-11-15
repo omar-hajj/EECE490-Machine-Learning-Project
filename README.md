@@ -1,21 +1,66 @@
 # EECE490 Machine Learning Project
 
-May–July Azm checks and the local FastAPI demo are ready. See
-[backtest results and API run instructions](AZM_BACKTEST_RESULTS.md).
-The July P90 correction failed its held-out check and is not served.
+Day-ahead forecast of electricity load and solar production for Azm, used to
+recommend which diesel generator to run each hour. Household 3 is the second
+site for checking that the method transfers.
 
-Electricity-demand and solar-production forecasting for individual sites
-across Lebanon, with generator planning based on each site's equipment.
-Azm and the supplied household/industrial data are candidate case studies.
+**Status (November 15, 2026): Week 1 done, Week 2 built, September test not yet run.**
 
-Baselines, Ridge, XGBoost and an initial direct net-load P90 experiment are
-complete; see [the current model results](MODEL_RESULTS.md) and
-[the original baseline results](BASELINE_RESULTS.md). The first approved
-[location-only comparison](LOCATION_ONLY_RESULTS.md) is also complete for six
-village sites. Location-only error was higher in all 12 demand/PV comparisons.
-Acceptance limits remain for the user to decide; no mode is enabled automatically.
+| Read this | For |
+|---|---|
+| [WEEK2_RESULTS.md](WEEK2_RESULTS.md) | Model choice, generator advice, missing-input test, leakage check |
+| [GENERATORS.md](GENERATORS.md) | Observed capacities, draft selection rule, wrong-generator metric |
+| [MODEL_RESULTS.md](MODEL_RESULTS.md), [BASELINE_RESULTS.md](BASELINE_RESULTS.md) | Week 1 baselines, Ridge, XGBoost, first P90 |
+| [DATA_PROVENANCE.md](DATA_PROVENANCE.md) | Sources, every change to the data, excluded files |
+| [CONTRIBUTIONS.md](CONTRIBUTIONS.md) | Who did what |
+| [PROJECT_PLAN.md](PROJECT_PLAN.md), [LOCATION_ONLY_RESULTS.md](LOCATION_ONLY_RESULTS.md) | Earlier scope and the exploratory location-only trial |
 
-Read [the project plan](PROJECT_PLAN.md) and [initial data findings](DATA_AUDIT.md).
+In short: a holiday-aware Ridge forecast of net load, plus a margin taken
+from its own recent errors, keeps about 9 hours in 10 below the upper
+estimate in every month tested. XGBoost and forecast weather did not earn
+their place. The operator's actual choices were larger than needed in 65% of
+hours; the forecast rule would cut that to about 20% with 0.4% of hours
+undersized. September 2026 (Azm) and July 2025 (village sites) are reserved
+and unscored.
+
+## Quick start
+
+The data ZIP is not in Git. Put `Data for EECE 490 Project.zip` in the folder
+above this one (or pass its path to `--archive`). From this folder, in
+PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-api.lock.txt
+.\.venv\Scripts\python.exe -m pip install streamlit==1.67.0 plotly==7.1.0
+.\.venv\Scripts\python.exe -m pip install -e . --no-deps
+.\.venv\Scripts\python.exe -m unittest discover -s tests
+```
+
+Build the hourly data and the served model, then start the API and the page:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/run_baselines.py --archive '..\Data for EECE 490 Project.zip' --config config/baseline.json --sites config/sites.json --output-dir outputs/baselines_confirmed_azm
+.\.venv\Scripts\python.exe scripts/build_serving_bundle.py
+.\.venv\Scripts\python.exe -m uvicorn lebanon_energy.api.service:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe -m streamlit run src/lebanon_energy/app/main.py
+```
+
+The API is at http://localhost:8000/docs and the page at
+http://localhost:8501. With Docker, `docker compose up --build` starts both
+after the two build commands above. Minimal API request:
+
+```json
+{"issue_time_local": "2026-08-10T00:00:00", "readings": []}
+```
+
+With no readings the answer uses the weekday-average fallback and says so in
+`input_status`. Readings are complete hourly averages in kW:
+`{"timestamp_local": "2026-08-09T23:00:00", "load_kw": 80.5, "pv_kw": 0.0}`.
+
+Tested with Python 3.12 and 3.13. On some Windows machines the first import
+of scikit-learn after installing is blocked for a moment by Smart App
+Control; running the command again works.
 
 ## Project structure
 
@@ -25,16 +70,16 @@ under `src/lebanon_energy/`:
 | Folder | What it does | Main modules |
 |---|---|---|
 | `data/` | Read the source ZIP, prepare complete hourly data, weather, calendar, data checks | `preparation`, `audit`, `weather`, `azm_weather`, `calendar_days`, `data_checks` |
-| `features/` | Model inputs known at the midnight issue time | `history`, `village` |
-| `models/` | Baselines, Ridge, XGBoost, P90 quantile model, backtests, location-only trial | `baselines`, `ridge`, `boosting`, `quantiles`, `azm_backtest`, `location_trial` |
-| `evaluation/` | Error metrics, daily peak error, wrong-generator hours | `metrics`, `peak_scores`, `generator_choice` |
+| `features/` | Model inputs known at the midnight issue time | `history`, `holidays`, `village` |
+| `models/` | Baselines, Ridge, XGBoost, P90 quantile model, backtests, rolling-origin check, served bundle, location-only trial | `baselines`, `ridge`, `boosting`, `quantiles`, `azm_backtest`, `walk_forward`, `serving`, `location_trial` |
+| `evaluation/` | Error metrics, daily peak error, wrong-generator hours, missing-input test, leakage check, run log | `metrics`, `peak_scores`, `generator_choice`, `missing_inputs`, `leakage`, `run_log` |
 | `generators/` | Generator capacities, operating pattern, selection rule | `capacity`, `policy` |
-| `api/` | FastAPI forecast service | `service` |
-| `app/` | Streamlit operator page (Week 2) | |
+| `api/` | FastAPI forecast and generator-advice service | `service` |
+| `app/` | Streamlit operator page | `main` |
 
 `scripts/` holds one command per step, `tests/` the unit tests, `config/`
-the settings and decisions, and `outputs/` (not in Git) every generated
-file. [DATA_PROVENANCE.md](DATA_PROVENANCE.md) documents the data.
+the settings and decisions, `outputs/` (not in Git) every generated file,
+and `results/run_log.csv` (in Git) the scores of every logged run. [DATA_PROVENANCE.md](DATA_PROVENANCE.md) documents the data.
 
 ## Current tools
 
@@ -65,22 +110,22 @@ file. [DATA_PROVENANCE.md](DATA_PROVENANCE.md) documents the data.
 - [CONTRIBUTIONS.md](CONTRIBUTIONS.md): who did what (required for submission).
 
 Ridge/XGBoost training, saved-model verification, forecast-weather alignment
-and P90 experiments are implemented. Streamlit and automatic Azm weather
-retrieval remain planned work. No production model has been selected.
+and P90 experiments are implemented. The served method was selected with the
+rolling-origin check in [WEEK2_RESULTS.md](WEEK2_RESULTS.md).
 
 ## Generator rule and Docker
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/extract_generators.py --archive 'Data for EECE 490 Project (1).zip'
+.\.venv\Scripts\python.exe scripts/extract_generators.py --archive '..\Data for EECE 490 Project.zip'
 .\.venv\Scripts\python.exe scripts/score_generator_choice.py
 docker compose up --build
 ```
 
 The first command reads Azm rows before September 1 only. The second needs
-the baseline, Ridge, XGBoost and P90 runs listed above. The compose file
-mounts `outputs/azm_backtest/` (built by `scripts/backtest_azm.py`) into the
-container; the API is then at http://localhost:8000/docs. Build that model
-with the pinned versions in `requirements-serve.lock.txt` so it unpickles.
+the baseline, Ridge, XGBoost and P90 runs listed below. The compose file
+mounts `outputs/serving/` (the model bundle) into the API container and
+`outputs/baselines_confirmed_azm/` (meter history) into the page container.
+Build the bundle with the pinned versions so it unpickles in the container.
 
 ## Model experiments
 
@@ -88,12 +133,12 @@ The existing `.venv` is ready and selected as the default Python interpreter
 in `.vscode/settings.json`. These commands reproduce the current experiments:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/train_ridge.py --baseline-dir outputs/baselines_confirmed_azm --config config/ridge.json --archive 'Data for EECE 490 Project (1).zip' --output-dir outputs/ridge_history_calendar
-.\.venv\Scripts\python.exe scripts/prepare_weather_features.py --archive 'Data for EECE 490 Project (1).zip' --sites config/sites.json --baseline-dir outputs/baselines_confirmed_azm --output-dir outputs/weather_features
-.\.venv\Scripts\python.exe scripts/train_ridge.py --baseline-dir outputs/baselines_confirmed_azm --config config/ridge_weather.json --archive 'Data for EECE 490 Project (1).zip' --weather-features outputs/weather_features/features.csv --output-dir outputs/ridge_weather_preliminary
-.\.venv\Scripts\python.exe scripts/train_xgboost.py --baseline-dir outputs/baselines_confirmed_azm --config config/xgboost.json --archive 'Data for EECE 490 Project (1).zip' --output-dir outputs/xgboost_history_calendar
-.\.venv\Scripts\python.exe scripts/train_xgboost.py --baseline-dir outputs/baselines_confirmed_azm --config config/xgboost_weather.json --archive 'Data for EECE 490 Project (1).zip' --weather-features outputs/weather_features/features.csv --output-dir outputs/xgboost_weather_preliminary
-.\.venv\Scripts\python.exe scripts/train_quantile.py --baseline-dir outputs/baselines_confirmed_azm --sites config/sites.json --config config/quantile.json --archive 'Data for EECE 490 Project (1).zip' --output-dir outputs/azm_net_p90
+.\.venv\Scripts\python.exe scripts/train_ridge.py --baseline-dir outputs/baselines_confirmed_azm --config config/ridge.json --archive '..\Data for EECE 490 Project.zip' --output-dir outputs/ridge_history_calendar
+.\.venv\Scripts\python.exe scripts/prepare_weather_features.py --archive '..\Data for EECE 490 Project.zip' --sites config/sites.json --baseline-dir outputs/baselines_confirmed_azm --output-dir outputs/weather_features
+.\.venv\Scripts\python.exe scripts/train_ridge.py --baseline-dir outputs/baselines_confirmed_azm --config config/ridge_weather.json --archive '..\Data for EECE 490 Project.zip' --weather-features outputs/weather_features/features.csv --output-dir outputs/ridge_weather_preliminary
+.\.venv\Scripts\python.exe scripts/train_xgboost.py --baseline-dir outputs/baselines_confirmed_azm --config config/xgboost.json --archive '..\Data for EECE 490 Project.zip' --output-dir outputs/xgboost_history_calendar
+.\.venv\Scripts\python.exe scripts/train_xgboost.py --baseline-dir outputs/baselines_confirmed_azm --config config/xgboost_weather.json --archive '..\Data for EECE 490 Project.zip' --weather-features outputs/weather_features/features.csv --output-dir outputs/xgboost_weather_preliminary
+.\.venv\Scripts\python.exe scripts/train_quantile.py --baseline-dir outputs/baselines_confirmed_azm --sites config/sites.json --config config/quantile.json --archive '..\Data for EECE 490 Project.zip' --output-dir outputs/azm_net_p90
 ```
 
 Weather experiments are preliminary, explicitly approved by the user:
@@ -108,7 +153,7 @@ Recompute the combined comparison with:
 ```
 
 Replay any Ridge or XGBoost point model run using
-`scripts/verify_ridge_outputs.py --baseline-dir outputs/baselines_confirmed_azm --model-dir RUN_DIRECTORY --archive 'Data for EECE 490 Project (1).zip'`.
+`scripts/verify_ridge_outputs.py --baseline-dir outputs/baselines_confirmed_azm --model-dir RUN_DIRECTORY --archive '..\Data for EECE 490 Project.zip'`.
 For weather runs also pass `--weather-features outputs/weather_features/features.csv`.
 The verifier name is retained for compatibility; it now checks both families.
 The direct P90 run has `scripts/verify_quantile_outputs.py`.
@@ -122,8 +167,8 @@ September/July remain reserved for final testing. The user confirmed Azm's
 Original source column names remain in the reports alongside those meanings.
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/run_baselines.py --archive 'Data for EECE 490 Project (1).zip' --config config/baseline.json --sites config/sites.json --output-dir outputs/baselines_confirmed_azm
-.\.venv\Scripts\python.exe scripts/verify_baseline_outputs.py --output-dir outputs/baselines_confirmed_azm --archive 'Data for EECE 490 Project (1).zip'
+.\.venv\Scripts\python.exe scripts/run_baselines.py --archive '..\Data for EECE 490 Project.zip' --config config/baseline.json --sites config/sites.json --output-dir outputs/baselines_confirmed_azm
+.\.venv\Scripts\python.exe scripts/verify_baseline_outputs.py --output-dir outputs/baselines_confirmed_azm --archive '..\Data for EECE 490 Project.zip'
 ```
 
 The run saves source-unit hourly observations, every validation prediction,
@@ -133,10 +178,8 @@ select a final model, or infer missing equipment details.
 
 ## Setup
 
-The local `.venv` was created and verified with Python 3.12.14. Use its explicit
-executable; the system-level `python` aliases are not required. For a new
-machine, install Python 3.12 and create a virtual environment first. The pinned
-modeling dependencies were tested with that version.
+The pinned dependencies were tested with Python 3.12.14 and 3.13.12. Use the
+virtual environment's explicit executable; see Quick start above.
 
 With a working Python installation, use PowerShell from the project folder:
 
@@ -145,7 +188,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-modeling.lock.txt
 .\.venv\Scripts\python.exe -m pip install -e . --no-deps
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-.\.venv\Scripts\python.exe scripts/audit_data.py --archive 'Data for EECE 490 Project (1).zip' --output outputs/data_audit.json
+.\.venv\Scripts\python.exe scripts/audit_data.py --archive '..\Data for EECE 490 Project.zip' --output outputs/data_audit.json
 ```
 
 If pip cannot reach `files.pythonhosted.org` (this happened on the AUB
@@ -215,7 +258,7 @@ against the supplied copies with one command (see section 5 of
 the forecast file can no longer be, so the models keep the supplied copy.
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/download_azm_weather.py --archive 'Data for EECE 490 Project (1).zip'
+.\.venv\Scripts\python.exe scripts/download_azm_weather.py --archive '..\Data for EECE 490 Project.zip'
 ```
 
 ## Village weather

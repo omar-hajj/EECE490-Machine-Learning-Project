@@ -1,5 +1,10 @@
 # Azm backtests and API demo
 
+> **Superseded for the API (November 15, 2026).** The service described
+> under "Local API" below was replaced by the one in
+> [WEEK2_RESULTS.md](WEEK2_RESULTS.md), which serves an upper estimate and
+> generator advice. The backtest and calibration results here still stand.
+
 The approved May–July checks, July split calibration and local API demo are
 complete. September 2026 and village July 2025 remain unscored. Raw readings
 are unchanged. These are exploratory development results.
@@ -60,7 +65,7 @@ Run from the project folder:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/backtest_azm.py
-.\.venv\Scripts\python.exe scripts/verify_azm_backtest.py
+.\.venv\Scripts\python.exe scripts/verify_azm_backtest.py --archive '..\Data for EECE 490 Project.zip'
 .\.venv\Scripts\python.exe -m uvicorn lebanon_energy.api.service:app --host 127.0.0.1 --port 8000
 ```
 

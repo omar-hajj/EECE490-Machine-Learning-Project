@@ -46,6 +46,7 @@
     ]
   ],
   "reserve_margin_fraction": 0.1,
+  "minimum_run_hours": 3,
   "parallel_rule": "parallel combinations observed for at least 3 whole hours",
   "selection_rule": "Run the smallest allowed configuration whose capacity covers the forecast net load (load minus PV) times (1 + reserve margin); ties go to the operator.",
   "site_id": "azm",

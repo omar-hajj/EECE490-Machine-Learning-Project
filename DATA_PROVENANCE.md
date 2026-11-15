@@ -12,7 +12,7 @@ Every number in the checks below is reproduced by one command, which writes
 `outputs/data_checks/results.json` and `summary.md`:
 
 ```powershell
-python scripts/data_checks.py --archive 'Data for EECE 490 Project (1).zip'
+python scripts/data_checks.py --archive '..\Data for EECE 490 Project.zip'
 ```
 
 ## Source

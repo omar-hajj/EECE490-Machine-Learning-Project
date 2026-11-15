@@ -104,9 +104,9 @@ The decisions are recorded in `config/location_only.json`. From the project
 folder, with the existing `.venv`:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/prepare_village_experiment.py --baseline-dir outputs/baselines_confirmed_azm --weather-dir outputs/weather_deir_qanoun_en_nahr --sites config/sites.json --config config/location_only.json --archive 'Data for EECE 490 Project (1).zip' --output-dir outputs/village_location_trial
-.\.venv\Scripts\python.exe scripts/compare_location_only.py --prepared-dir outputs/village_location_trial --config config/location_only.json --archive 'Data for EECE 490 Project (1).zip' --output-dir outputs/location_only_comparison
-.\.venv\Scripts\python.exe scripts/verify_location_trial.py --prepared-dir outputs/village_location_trial --result-dir outputs/location_only_comparison --baseline-dir outputs/baselines_confirmed_azm --archive 'Data for EECE 490 Project (1).zip'
+.\.venv\Scripts\python.exe scripts/prepare_village_experiment.py --baseline-dir outputs/baselines_confirmed_azm --weather-dir outputs/weather_deir_qanoun_en_nahr --sites config/sites.json --config config/location_only.json --archive '..\Data for EECE 490 Project.zip' --output-dir outputs/village_location_trial
+.\.venv\Scripts\python.exe scripts/compare_location_only.py --prepared-dir outputs/village_location_trial --config config/location_only.json --archive '..\Data for EECE 490 Project.zip' --output-dir outputs/location_only_comparison
+.\.venv\Scripts\python.exe scripts/verify_location_trial.py --prepared-dir outputs/village_location_trial --result-dir outputs/location_only_comparison --baseline-dir outputs/baselines_confirmed_azm --archive '..\Data for EECE 490 Project.zip'
 ```
 
 Detailed candidate logs, model hashes, predictions and source hashes are in

@@ -20,3 +20,6 @@ __pycache__/
 # Local source data and generated inspection outputs
 /data/
 /outputs/
+
+# Local editor/assistant launch settings
+.claude/

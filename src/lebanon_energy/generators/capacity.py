@@ -217,6 +217,7 @@ def draft_policy(summary, *, minimum_whole_hours=3, reserve_margin_fraction=0.10
     return {"status": "draft_from_observed_data_pending_school_confirmation",
             "generators": generators, "allowed_configurations": allowed,
             "reserve_margin_fraction": reserve_margin_fraction,
+            "minimum_run_hours": 3,
             "parallel_rule": f"parallel combinations observed for at least {minimum_whole_hours} whole hours",
             "selection_rule": "Run the smallest allowed configuration whose capacity covers the forecast net load (load minus PV) times (1 + reserve margin); ties go to the operator."}
 

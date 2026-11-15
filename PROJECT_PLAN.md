@@ -88,8 +88,9 @@ were independently replayed. The source remains unchanged and final test
 months are unscored. A first six-site location-only comparison is now complete;
 see `LOCATION_ONLY_RESULTS.md`. May–July Azm checks and July split calibration
 are complete; see `AZM_BACKTEST_RESULTS.md`. A local FastAPI demo serves Azm
-demand and PV with explicit fallbacks. No visual interface or Docker deployment
-exists yet. The local Python/VS Code environment is ready.
+demand and PV with explicit fallbacks. As of November 15 the API serves an
+upper estimate of net load and a generator recommendation, a Streamlit
+operator page exists, and Docker files cover both; see `WEEK2_RESULTS.md`.
 
 ## Decisions and information still needed
 
@@ -105,13 +106,14 @@ exists yet. The local Python/VS Code environment is ready.
   confirmed as W. Municipality's clock differs from the other six during the
   March inspection and remains pending; other sites' meter boundaries relative
   to PV still need confirmation. Weather publication timing remains unverified.
-- Parallel operation is confirmed possible at Azm. Actual generator usable
-  capacities are explicitly unknown. Permitted combinations and reserve
-  margin remain unresolved; no equipment recommendations have been made.
+- Parallel operation is confirmed possible at Azm. Rated capacities are
+  unknown; recommendations use a draft policy built from observed maxima
+  (`GENERATORS.md`) and are labelled as such until the school confirms it.
 - The direct net-load P90 achieved 85.3% validation coverage, not its intended
   90%. Earlier-month coverage varied widely. July split calibration reduced
-  later coverage from 96.3% to 83.5%, so the adjustment is not served. Further
-  uncertainty modeling is needed before operational recommendations.
+  later coverage from 96.3% to 83.5%, so the adjustment is not served. It
+  was replaced by a margin from the forecast's recent errors, which held 89%
+  to 98% in every month from May to August (`WEEK2_RESULTS.md`).
 - The user approved the first baseline protocol. Further cleaning changes
   still require evidence and agreement; the exploratory scores do not settle
   ambiguous units, meter meanings, or the source of large errors.

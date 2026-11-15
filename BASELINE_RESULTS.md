@@ -96,8 +96,8 @@ The approved rules are in `BASELINE_PROTOCOL.md` and `config/baseline.json`.
 With the project dependencies available:
 
 ```powershell
-python scripts/run_baselines.py --archive 'Data for EECE 490 Project (1).zip' --config config/baseline.json --sites config/sites.json --output-dir outputs/baselines_confirmed_azm
-python scripts/verify_baseline_outputs.py --output-dir outputs/baselines_confirmed_azm --archive 'Data for EECE 490 Project (1).zip'
+python scripts/run_baselines.py --archive '..\Data for EECE 490 Project.zip' --config config/baseline.json --sites config/sites.json --output-dir outputs/baselines_confirmed_azm
+python scripts/verify_baseline_outputs.py --output-dir outputs/baselines_confirmed_azm --archive '..\Data for EECE 490 Project.zip'
 ```
 
 Current generated evidence is in `outputs/baselines_confirmed_azm/results.json`,

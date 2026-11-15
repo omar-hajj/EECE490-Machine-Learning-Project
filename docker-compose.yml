@@ -1,6 +1,9 @@
-# `docker compose up --build` starts the API on http://localhost:8000/docs.
-# Build the model first (scripts/backtest_azm.py) so outputs/azm_backtest exists.
-# The Streamlit operator page joins this file in Week 2.
+# `docker compose up --build` starts both services:
+#   API   http://localhost:8000/docs
+#   Page  http://localhost:8501
+# Before the first run, create the two folders that are mounted below:
+#   scripts/run_baselines.py          -> outputs/baselines_confirmed_azm (meter history)
+#   scripts/build_serving_bundle.py   -> outputs/serving (model bundle)
 services:
   api:
     build: .
@@ -8,7 +11,24 @@ services:
     ports:
       - "8000:8000"
     environment:
-      AZM_MODEL_PATH: /app/models/azm_demo.joblib
+      AZM_MODEL_PATH: /app/models/azm_bundle.joblib
     volumes:
-      - ./outputs/azm_backtest:/app/models:ro
+      - ./outputs/serving:/app/models:ro
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: eece490-azm-app
+    ports:
+      - "8501:8501"
+    environment:
+      API_URL: http://api:8000
+      AZM_HISTORY_CSV: /app/data/hourly_data.csv
+    volumes:
+      - ./outputs/baselines_confirmed_azm:/app/data:ro
+    depends_on:
+      api:
+        condition: service_healthy
     restart: unless-stopped

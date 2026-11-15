@@ -1,0 +1,225 @@
+run_time_utc,script,site_id,split,method,metric,value,hours,identifier_sha256
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,last_week,undersized_hours,71,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,last_week,oversized_hours,129,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,last_week,nmae,0.1915581471379796,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,weekday_average,undersized_hours,85,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,weekday_average,oversized_hours,196,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,weekday_average,nmae,0.20961535487843386,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge,undersized_hours,65,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge,oversized_hours,128,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge,nmae,0.16787688838608888,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday,undersized_hours,56,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday,oversized_hours,133,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday,nmae,0.16296859860167037,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost,undersized_hours,76,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost,oversized_hours,113,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost,nmae,0.17193425965970932,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_change,undersized_hours,71,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_change,oversized_hours,120,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_change,nmae,0.1747147435803517,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday_weather,undersized_hours,55,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday_weather,oversized_hours,133,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday_weather,nmae,0.1670319333418194,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,weekday_p90,undersized_hours,44,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,weekday_p90,oversized_hours,489,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,weekday_p90,coverage,0.767260579064588,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_p90,undersized_hours,44,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_p90,oversized_hours,280,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_p90,coverage,0.878619153674833,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_p90_change,undersized_hours,31,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_p90_change,oversized_hours,314,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,xgboost_p90_change,coverage,0.8897550111358574,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_plus_recent_errors,undersized_hours,18,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_plus_recent_errors,oversized_hours,572,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_plus_recent_errors,coverage,0.914996288047513,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday_plus_recent_errors,undersized_hours,14,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday_plus_recent_errors,oversized_hours,554,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,All months,ridge_holiday_plus_recent_errors,coverage,0.9213066072754269,2694,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,last_week,undersized_hours,6,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,last_week,oversized_hours,33,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,last_week,nmae,0.19505858550270208,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,weekday_average,undersized_hours,8,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,weekday_average,oversized_hours,30,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,weekday_average,nmae,0.18519039396783793,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge,undersized_hours,9,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge,oversized_hours,21,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge,nmae,0.19411991338983983,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday,undersized_hours,9,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday,oversized_hours,13,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday,nmae,0.1786176665704949,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost,undersized_hours,9,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost,oversized_hours,9,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost,nmae,0.15680574256955562,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_change,undersized_hours,9,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_change,oversized_hours,22,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_change,nmae,0.16446127274412675,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday_weather,undersized_hours,9,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday_weather,oversized_hours,12,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday_weather,nmae,0.17416987235213485,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,weekday_p90,undersized_hours,5,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,weekday_p90,oversized_hours,62,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,weekday_p90,coverage,0.5893186003683242,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_p90,undersized_hours,2,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_p90,oversized_hours,54,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_p90,coverage,0.8729281767955801,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_p90_change,undersized_hours,1,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_p90_change,oversized_hours,72,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,xgboost_p90_change,coverage,0.8968692449355433,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_plus_recent_errors,undersized_hours,1,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_plus_recent_errors,oversized_hours,107,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_plus_recent_errors,coverage,0.9005524861878453,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday_plus_recent_errors,undersized_hours,0,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday_plus_recent_errors,oversized_hours,86,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,May,ridge_holiday_plus_recent_errors,coverage,0.9023941068139963,543,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,last_week,undersized_hours,52,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,last_week,oversized_hours,49,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,last_week,nmae,0.2745041810555013,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,weekday_average,undersized_hours,71,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,weekday_average,oversized_hours,26,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,weekday_average,nmae,0.27330961268979387,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge,undersized_hours,47,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge,oversized_hours,43,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge,nmae,0.21732361775351117,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday,undersized_hours,37,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday,oversized_hours,42,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday,nmae,0.1919261219810258,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost,undersized_hours,51,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost,oversized_hours,63,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost,nmae,0.2565695393407004,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_change,undersized_hours,49,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_change,oversized_hours,61,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_change,nmae,0.259346777758025,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday_weather,undersized_hours,36,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday_weather,oversized_hours,47,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday_weather,nmae,0.19880526709829677,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,weekday_p90,undersized_hours,35,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,weekday_p90,oversized_hours,78,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,weekday_p90,coverage,0.5505124450951684,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_p90,undersized_hours,35,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_p90,oversized_hours,109,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_p90,coverage,0.7906295754026355,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_p90_change,undersized_hours,21,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_p90_change,oversized_hours,123,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,xgboost_p90_change,coverage,0.8316251830161054,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_plus_recent_errors,undersized_hours,12,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_plus_recent_errors,oversized_hours,199,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_plus_recent_errors,coverage,0.8945827232796486,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday_plus_recent_errors,undersized_hours,10,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday_plus_recent_errors,oversized_hours,203,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,June,ridge_holiday_plus_recent_errors,coverage,0.9106881405563689,683,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,last_week,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,last_week,oversized_hours,30,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,last_week,nmae,0.10850918729739166,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,weekday_average,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,weekday_average,oversized_hours,84,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,weekday_average,nmae,0.17272363481800868,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge,oversized_hours,39,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge,nmae,0.11221662471007686,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday,oversized_hours,50,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday,nmae,0.12318164417593767,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost,undersized_hours,2,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost,oversized_hours,20,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost,nmae,0.10005658165472833,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_change,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_change,oversized_hours,16,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_change,nmae,0.09570678803466477,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday_weather,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday_weather,oversized_hours,48,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday_weather,nmae,0.1330053193858124,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,weekday_p90,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,weekday_p90,oversized_hours,182,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,weekday_p90,coverage,0.9877384196185286,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_p90,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_p90,oversized_hours,65,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_p90,coverage,0.9645776566757494,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_p90_change,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_p90_change,oversized_hours,74,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,xgboost_p90_change,coverage,0.9822888283378747,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_plus_recent_errors,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_plus_recent_errors,oversized_hours,155,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_plus_recent_errors,coverage,0.9877384196185286,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday_plus_recent_errors,undersized_hours,0,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday_plus_recent_errors,oversized_hours,151,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,July,ridge_holiday_plus_recent_errors,coverage,0.9795640326975477,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),last_week,undersized_hours,13,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),last_week,oversized_hours,17,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),last_week,nmae,0.1729790871296595,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),weekday_average,undersized_hours,6,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),weekday_average,oversized_hours,56,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),weekday_average,nmae,0.18809265333604652,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge,undersized_hours,9,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge,oversized_hours,25,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge,nmae,0.146213461526179,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday,undersized_hours,10,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday,oversized_hours,28,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday,nmae,0.15697994015929445,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost,undersized_hours,14,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost,oversized_hours,21,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost,nmae,0.1534125506997828,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_change,undersized_hours,13,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_change,oversized_hours,21,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_change,nmae,0.15970204276574834,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday_weather,undersized_hours,10,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday_weather,oversized_hours,26,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday_weather,nmae,0.158080699431164,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),weekday_p90,undersized_hours,4,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),weekday_p90,oversized_hours,167,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),weekday_p90,coverage,0.8801089918256131,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_p90,undersized_hours,7,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_p90,oversized_hours,52,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_p90,coverage,0.8787465940054496,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_p90_change,undersized_hours,9,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_p90_change,oversized_hours,45,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),xgboost_p90_change,coverage,0.8460490463215259,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_plus_recent_errors,undersized_hours,5,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_plus_recent_errors,oversized_hours,111,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_plus_recent_errors,coverage,0.8719346049046321,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday_plus_recent_errors,undersized_hours,4,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday_plus_recent_errors,oversized_hours,114,734,9af546d89928
+2026-11-15T18:41:35.776001+00:00,walk_forward_azm,azm,August (validation),ridge_holiday_plus_recent_errors,coverage,0.8869209809264306,734,9af546d89928
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),full_inputs|with_fallback,hours_without_forecast,0,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),full_inputs|with_fallback,nmae,0.1612611309195573,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),full_inputs|with_fallback,coverage,0.8837837837837837,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),full_inputs|with_fallback,undersized_hours,4,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),full_inputs|with_fallback,oversized_hours,129,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),full_inputs|with_fallback,generator_changes_per_day,2.6129032258064515,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|with_fallback,hours_without_forecast,0,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|with_fallback,nmae,0.1716095108196921,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|with_fallback,coverage,0.8608108108108108,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|with_fallback,undersized_hours,4,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|with_fallback,oversized_hours,114,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|with_fallback,generator_changes_per_day,2.3225806451612905,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|without_fallback,hours_without_forecast,180,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|without_fallback,nmae,0.17672571823202105,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|without_fallback,coverage,0.8875,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|without_fallback,undersized_hours,2,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|without_fallback,oversized_hours,104,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_6_hours_missing|without_fallback,generator_changes_per_day,3.3225806451612905,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|with_fallback,hours_without_forecast,0,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|with_fallback,nmae,0.17667021769667085,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|with_fallback,coverage,0.8527027027027027,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|with_fallback,undersized_hours,4,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|with_fallback,oversized_hours,197,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|with_fallback,generator_changes_per_day,2.838709677419355,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|without_fallback,hours_without_forecast,692,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|without_fallback,nmae,0.21201905642333665,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|without_fallback,coverage,0.8541666666666666,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|without_fallback,undersized_hours,0,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|without_fallback,oversized_hours,2,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_24_hours_missing|without_fallback,generator_changes_per_day,0.06451612903225806,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_8_days_missing|with_fallback,hours_without_forecast,0,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_8_days_missing|with_fallback,nmae,0.19655279361507358,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_8_days_missing|with_fallback,coverage,0.9121621621621622,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_8_days_missing|with_fallback,undersized_hours,4,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_8_days_missing|with_fallback,oversized_hours,218,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_8_days_missing|with_fallback,generator_changes_per_day,4.67741935483871,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),last_8_days_missing|without_fallback,hours_without_forecast,740,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),no_meter_history|with_fallback,hours_without_forecast,0,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),no_meter_history|with_fallback,nmae,0.19655279361507358,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),no_meter_history|with_fallback,coverage,0.9121621621621622,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),no_meter_history|with_fallback,undersized_hours,4,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),no_meter_history|with_fallback,oversized_hours,218,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),no_meter_history|with_fallback,generator_changes_per_day,4.67741935483871,740,4db9445c7399
+2026-11-15T18:41:42.853763+00:00,evaluate_missing_inputs,azm,August (validation),no_meter_history|without_fallback,hours_without_forecast,740,740,4db9445c7399

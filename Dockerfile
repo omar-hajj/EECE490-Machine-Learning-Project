@@ -1,11 +1,11 @@
 # FastAPI forecast service for Azm. The trained model is not baked in:
-# mount the folder holding azm_demo.joblib at /app/models (see docker-compose.yml).
+# mount the folder holding azm_bundle.joblib at /app/models (see docker-compose.yml).
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    AZM_MODEL_PATH=/app/models/azm_demo.joblib
+    AZM_MODEL_PATH=/app/models/azm_bundle.joblib
 
 WORKDIR /app
 

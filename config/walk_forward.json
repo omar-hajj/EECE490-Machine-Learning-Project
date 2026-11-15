@@ -1,0 +1,13 @@
+{
+  "description": "Daily rolling-origin check of Azm net load. Settings are fixed in advance, not tuned on the days they forecast.",
+  "first_origin": "2026-05-01T00:00:00",
+  "minimum_training_rows": 150,
+  "quantile": 0.9,
+  "ridge_alpha": 1.0,
+  "xgboost": {"max_depth": 3, "n_estimators": 200, "learning_rate": 0.05},
+  "xgboost_quantile": {"max_depth": 2, "n_estimators": 200, "learning_rate": 0.05},
+  "recent_error_window_days": 28,
+  "recent_error_minimum_days": 7,
+  "fallback_error_window_days": 84,
+  "served_upper_method": "ridge_holiday_plus_recent_errors"
+}
