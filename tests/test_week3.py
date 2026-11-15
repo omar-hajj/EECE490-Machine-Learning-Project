@@ -134,8 +134,12 @@ class FinalTestGuardTests(unittest.TestCase):
         self.assertEqual(calls["end_day"], datetime(2026, 10, 1))
         self.assertEqual(summarize.call_args.args[3], {"September 2026": (datetime(2026, 9, 1), datetime(2026, 10, 1))})
 
-    def test_default_run_is_a_rehearsal(self):
-        self.assertFalse(final_test.RECORD.exists(), "The final test must not have been run yet")
+    def test_recorded_final_test_is_the_september_run(self):
+        if final_test.RECORD.exists():
+            record = json.loads(final_test.RECORD.read_text(encoding="utf-8"))
+            self.assertEqual(record["mode"], "final_test")
+            self.assertEqual(record["scored_period"], ["2026-09-01T00:00:00", "2026-10-01T00:00:00"])
+            self.assertTrue(record["source_unchanged"])
 
 
 if __name__ == "__main__":

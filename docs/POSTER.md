@@ -2,12 +2,14 @@
 
 Draft text for the six panels the announcement asks for. Every number is
 from a logged run before September 2026 (`results/run_log.csv`); sources are
-given under each panel. Replace anything marked **[TEAM]** before printing.
+given under each panel. The poster presents the plan; the September test
+results are in `FINAL_RESULTS.md`. Check anything marked **[TEAM]** before
+printing.
 
 **Title:** Which generator tomorrow? Day-ahead load forecasting for a
 generator-powered campus
 
-**Team:** [TEAM: names] · EECE 490, Fall 2026–27 · Path A
+**Team:** Omar El Hajj, Houssein Karnib, Sami Marouni · EECE 490, Fall 2026–27 · Path A
 
 ---
 
@@ -119,5 +121,6 @@ What if the meter feed is late or down at midnight?
 
 One campus and 4.5 months of data. Generator capacities are the highest
 outputs observed, not confirmed ratings. Oversizing is measured in unused
-capacity, not litres of diesel. September, where load is higher than
-anything in training, is not yet evaluated.
+capacity, not litres of diesel. On the unseen September month the method
+stayed ahead of the baseline (20.2% against 22.4% error; 2.4% of hours
+undersized, nearly all in the first week of term).

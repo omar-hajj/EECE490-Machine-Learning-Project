@@ -76,6 +76,9 @@ def analyse(predictions, holidays, peak_temperature=None):
     groups = {
         "by_month": {month: _group_scores(rows_where(lambda s, m=month: s.strftime("%B") == m))
                      for month in dict.fromkeys(stamp.strftime("%B") for stamp in sorted(scored))},
+        "by_week_of_month": {name: _group_scores(rows_where(lambda s, lo=low, hi=high: lo <= s.day <= hi))
+                             for name, (low, high) in {"days 1-7": (1, 7), "days 8-14": (8, 14),
+                                                       "days 15-21": (15, 21), "days 22-31": (22, 31)}.items()},
         "by_hour": {f"{hour:02d}:00": _group_scores(rows_where(lambda s, h=hour: s.hour == h)) for hour in range(24)},
         "by_day_type": {
             "weekday (Mon-Fri)": _group_scores(rows_where(lambda s: s.weekday() < 5 and s.date() not in holidays)),
@@ -176,7 +179,8 @@ def summary_markdown(report):
              f"Forecast: `{POINT}`; baseline: `{BASELINE}`; upper estimate: `{UPPER}`. "
              "Bias is forecast minus actual, so negative means under-forecast. September is not read.", ""]
     lines += table("Overall", {"all hours": analysis["overall"]})
-    titles = {"by_month": "By month", "by_day_type": "By type of day", "by_load_level": "Working hours vs. the rest",
+    titles = {"by_month": "By month", "by_day_type": "By type of day", "by_week_of_month": "By week of the month",
+              "by_load_level": "Working hours vs. the rest",
               "by_forecast_temperature": "Hot vs. mild days", "by_hour": "By hour of day"}
     for key, title in titles.items():
         if key in analysis["groups"]:

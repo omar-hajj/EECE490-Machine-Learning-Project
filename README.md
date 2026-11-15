@@ -4,10 +4,11 @@ Day-ahead forecast of electricity load and solar production for Azm, used to
 recommend which diesel generator to run each hour. Household 3 is the second
 site for checking that the method transfers.
 
-**Status (November 15, 2026): Weeks 1 and 2 done, Week 3 analysis and pages built, September test not yet run.**
+**Status (November 15, 2026): all three weeks built; the September final test has been run once ([FINAL_RESULTS.md](FINAL_RESULTS.md)).**
 
 | Read this | For |
 |---|---|
+| [FINAL_RESULTS.md](FINAL_RESULTS.md) | **September final test**: results table, what held, what failed, final recommendation |
 | [WEEK2_RESULTS.md](WEEK2_RESULTS.md) | Model choice, generator advice, missing-input test, leakage check |
 | [WEEK3_ANALYSIS.md](WEEK3_ANALYSIS.md) | Error analysis, 3 worst days, explainability, distribution shift, human oversight, Household 3 transfer, limitations, final-test procedure |
 | [GENERATORS.md](GENERATORS.md) | Observed capacities, draft selection rule, wrong-generator metric |
@@ -22,8 +23,10 @@ from its own recent errors, keeps about 9 hours in 10 below the upper
 estimate in every month tested. XGBoost and forecast weather did not earn
 their place. The operator's actual choices were larger than needed in 65% of
 hours; the forecast rule would cut that to about 20% with 0.4% of hours
-undersized. September 2026 (Azm) and July 2025 (village sites) are reserved
-and unscored.
+undersized. On the unseen test month (September) the same method was still
+the best of those compared: 20.2% error against 22.4% for the baseline,
+88.7% coverage, and 2.4% of hours undersized, nearly all in the first week
+of term. July 2025 (village sites) remains reserved and unscored.
 
 ## Quick start
 
@@ -88,7 +91,7 @@ this folder, after `run_baselines.py` (Quick start). Outputs go to
 | Errors by condition, 3 worst days | WEEK3_ANALYSIS.md | `analyse_errors.py` | `walk_forward.py` |
 | Input effects (explainability) | WEEK3_ANALYSIS.md | `explain_model.py` | `build_serving_bundle.py` |
 | Household 3 transfer | WEEK3_ANALYSIS.md | `walk_forward.py --site household_3` | baselines |
-| September final test (once) | results/final_test_azm.json | `final_test.py --archive <zip> --open-test-set` | freeze and commit |
+| September final test | FINAL_RESULTS.md, results/final_test_azm.json | **Already run once; do not rerun.** `final_test.py` without `--open-test-set` rehearses on August | |
 
 Tested with Python 3.12 and 3.13. On some Windows machines the first import
 of scikit-learn after installing is blocked for a moment by Smart App

@@ -1,0 +1,324 @@
+{
+  "run_time_utc": "2026-11-15T19:50:42.233841+00:00",
+  "mode": "final_test",
+  "site_id": "azm",
+  "target": "signed_net_load_kw = campus_load_kw - solar_pv_kw",
+  "unit": "kW",
+  "scored_period": [
+    "2026-09-01T00:00:00",
+    "2026-10-01T00:00:00"
+  ],
+  "warm_up_days": 28,
+  "test_period_scored": true,
+  "configuration": {
+    "description": "Daily rolling-origin check of Azm net load. Settings are fixed in advance, not tuned on the days they forecast.",
+    "first_origin": "2026-05-01T00:00:00",
+    "minimum_training_rows": 150,
+    "quantile": 0.9,
+    "ridge_alpha": 1.0,
+    "xgboost": {
+      "max_depth": 3,
+      "n_estimators": 200,
+      "learning_rate": 0.05
+    },
+    "xgboost_quantile": {
+      "max_depth": 2,
+      "n_estimators": 200,
+      "learning_rate": 0.05
+    },
+    "recent_error_window_days": 28,
+    "recent_error_minimum_days": 7,
+    "fallback_error_window_days": 84,
+    "served_upper_method": "ridge_holiday_plus_recent_errors"
+  },
+  "reserve_margin_fraction": 0.1,
+  "preparation": {
+    "rows_read": 48080,
+    "rows_at_or_after_end_not_used": 0,
+    "complete_hours": 3941
+  },
+  "source_sha256": "f7de0f76ca533604134a4968be672c53c49116a37c860babd9bdb15c23b367aa",
+  "source_unchanged": true,
+  "policy_sha256": "02fdd93cd52f00541b69ab78f6c3b6589175fb6bd49ab9d09c22742fc764cc05",
+  "config_sha256": "a8f15e9419fe6e1f88f16dc1d7997ed0ec9d74081eaeff382300ede13916b446",
+  "code_sha256": {
+    "final_test.py": "34a1d829a2501bc9b90eefc5369a1221db639c92cfaf1bc28169cf921e7fc511",
+    "walk_forward.py": "d851086d8ff55131d053c7e6b95eebd6b06837d879b9edb6e0cf09f9530501cf"
+  },
+  "summary": {
+    "common_hours": 617,
+    "first_common_hour": "2026-09-01T00:00:00",
+    "last_common_hour": "2026-09-30T22:00:00",
+    "periods": {
+      "September 2026": {
+        "hours": 617,
+        "mean_actual_net_kw": 143.0608373851972,
+        "maximum_actual_net_kw": 462.30999999999995,
+        "point": {
+          "last_week": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 58,
+              "oversized_hours": 54,
+              "right_sized_hours": 505,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.0940032414910859,
+              "oversized_share": 0.08752025931928688,
+              "right_sized_share": 0.8184764991896273,
+              "shortfall_kwh": 5327.980000000001,
+              "excess_capacity_kwh": 8832.099999999997
+            },
+            "mae_kw": 32.115873851971905,
+            "nmae": 0.2244910238117689,
+            "largest_error_kw": 284.9816666666666,
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 20.271624122096167,
+              "empirical_hourly_coverage": 0.4959481361426256,
+              "underforecast_hours": 311,
+              "mean_underforecast_shortfall_kw": 42.307245444801715
+            }
+          },
+          "weekday_average": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 130,
+              "oversized_hours": 0,
+              "right_sized_hours": 487,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.2106969205834684,
+              "oversized_share": 0.0,
+              "right_sized_share": 0.7893030794165316,
+              "shortfall_kwh": 16034.554166666663,
+              "excess_capacity_kwh": 0.0
+            },
+            "mae_kw": 53.8832241068646,
+            "nmae": 0.37664552432180864,
+            "largest_error_kw": 298.60242063492063,
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 46.94252757067556,
+              "empirical_hourly_coverage": 0.13452188006482982,
+              "underforecast_hours": 534,
+              "mean_underforecast_shortfall_kw": 60.016256048017965
+            }
+          },
+          "ridge": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 64,
+              "oversized_hours": 49,
+              "right_sized_hours": 504,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.10372771474878444,
+              "oversized_share": 0.07941653160453808,
+              "right_sized_share": 0.8168557536466775,
+              "shortfall_kwh": 3950.3483333333334,
+              "excess_capacity_kwh": 6309.999999999997
+            },
+            "mae_kw": 30.095428360093408,
+            "nmae": 0.21036804278630233,
+            "largest_error_kw": 233.28148288032406,
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 19.793414194339796,
+              "empirical_hourly_coverage": 0.4246353322528363,
+              "underforecast_hours": 355,
+              "mean_underforecast_shortfall_kw": 36.463551507358765
+            }
+          },
+          "ridge_holiday": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 60,
+              "oversized_hours": 52,
+              "right_sized_hours": 505,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.09724473257698542,
+              "oversized_share": 0.08427876823338736,
+              "right_sized_share": 0.8184764991896273,
+              "shortfall_kwh": 3659.569166666667,
+              "excess_capacity_kwh": 7163.499999999997
+            },
+            "mae_kw": 28.83013539279153,
+            "nmae": 0.20152360296315897,
+            "largest_error_kw": 231.49389755448055,
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 18.158629586163247,
+              "empirical_hourly_coverage": 0.45705024311183146,
+              "underforecast_hours": 335,
+              "mean_underforecast_shortfall_kw": 35.1681160482369
+            }
+          },
+          "xgboost": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 67,
+              "oversized_hours": 37,
+              "right_sized_hours": 513,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.1085899513776337,
+              "oversized_share": 0.059967585089141004,
+              "right_sized_share": 0.8314424635332253,
+              "shortfall_kwh": 4441.569166666668,
+              "excess_capacity_kwh": 4966.9
+            },
+            "mae_kw": 30.09906788509128,
+            "nmae": 0.21039348318679485,
+            "largest_error_kw": 256.6601643880208,
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 19.607985755998723,
+              "empirical_hourly_coverage": 0.4683954619124797,
+              "underforecast_hours": 328,
+              "mean_underforecast_shortfall_kw": 39.02825732828156
+            }
+          },
+          "xgboost_change": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 63,
+              "oversized_hours": 43,
+              "right_sized_hours": 511,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.10210696920583469,
+              "oversized_share": 0.06969205834683954,
+              "right_sized_share": 0.8282009724473258,
+              "shortfall_kwh": 4658.585000000001,
+              "excess_capacity_kwh": 5909.299999999997
+            },
+            "mae_kw": 30.683564705966777,
+            "nmae": 0.21447913535798768,
+            "largest_error_kw": 260.96608935038245,
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 19.34760447440022,
+              "empirical_hourly_coverage": 0.4846029173419773,
+              "underforecast_hours": 318,
+              "mean_underforecast_shortfall_kw": 39.482295669602145
+            }
+          }
+        },
+        "upper": {
+          "weekday_p90": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 52,
+              "oversized_hours": 40,
+              "right_sized_hours": 525,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.08427876823338736,
+              "oversized_share": 0.06482982171799027,
+              "right_sized_share": 0.8508914100486223,
+              "shortfall_kwh": 2403.7408333333337,
+              "excess_capacity_kwh": 7243.3
+            },
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 14.633754186925986,
+              "empirical_hourly_coverage": 0.5364667747163695,
+              "underforecast_hours": 286,
+              "mean_underforecast_shortfall_kw": 32.3645134032634
+            }
+          },
+          "xgboost_p90": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 43,
+              "oversized_hours": 156,
+              "right_sized_hours": 418,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.06969205834683954,
+              "oversized_share": 0.25283630470016205,
+              "right_sized_share": 0.6774716369529984,
+              "shortfall_kwh": 3388.774999999999,
+              "excess_capacity_kwh": 25878.200000000044
+            },
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 13.34381829131635,
+              "empirical_hourly_coverage": 0.8038897893030794,
+              "underforecast_hours": 121,
+              "mean_underforecast_shortfall_kw": 58.97402226555774
+            }
+          },
+          "xgboost_p90_change": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 29,
+              "oversized_hours": 181,
+              "right_sized_hours": 407,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.04700162074554295,
+              "oversized_share": 0.293354943273906,
+              "right_sized_share": 0.6596434359805511,
+              "shortfall_kwh": 2108.996666666667,
+              "excess_capacity_kwh": 31735.900000000067
+            },
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 10.895725051750047,
+              "empirical_hourly_coverage": 0.8508914100486223,
+              "underforecast_hours": 92,
+              "mean_underforecast_shortfall_kw": 52.12655007486759
+            }
+          },
+          "ridge_plus_recent_errors": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 19,
+              "oversized_hours": 285,
+              "right_sized_hours": 313,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.03079416531604538,
+              "oversized_share": 0.4619124797406807,
+              "right_sized_share": 0.5072933549432739,
+              "shortfall_kwh": 572.4591666666668,
+              "excess_capacity_kwh": 47295.40000000004
+            },
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 9.829858708738525,
+              "empirical_hourly_coverage": 0.8816855753646677,
+              "underforecast_hours": 73,
+              "mean_underforecast_shortfall_kw": 36.10602229975445
+            }
+          },
+          "ridge_holiday_plus_recent_errors": {
+            "generator_choice": {
+              "hours": 617,
+              "undersized_hours": 15,
+              "oversized_hours": 295,
+              "right_sized_hours": 307,
+              "infeasible_actual_hours": 0,
+              "infeasible_forecast_hours": 0,
+              "undersized_share": 0.024311183144246355,
+              "oversized_share": 0.47811993517017826,
+              "right_sized_share": 0.49756888168557534,
+              "shortfall_kwh": 381.8533333333334,
+              "excess_capacity_kwh": 48400.900000000045
+            },
+            "quantile_scores": {
+              "observations": 617,
+              "pinball_loss": 9.691352122377886,
+              "empirical_hourly_coverage": 0.8865478119935171,
+              "underforecast_hours": 70,
+              "mean_underforecast_shortfall_kw": 35.70861210844816
+            }
+          }
+        }
+      }
+    }
+  }
+}

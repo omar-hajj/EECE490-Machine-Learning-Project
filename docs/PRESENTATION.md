@@ -1,9 +1,8 @@
 # Final presentation: 5-minute outline and Q&A preparation (draft)
 
 Seven slides, about 40 seconds each. Numbers are from logged runs before
-September 2026. **Slide 5 needs the September result**, which does not exist
-yet; do not present until `scripts/final_test.py --open-test-set` has been
-run once and the figures are filled in. Replace **[TEAM]** items.
+September 2026, except slide 5, which is the September final test
+(`FINAL_RESULTS.md`). Team: Omar El Hajj, Houssein Karnib, Sami Marouni.
 
 ## Slides
 
@@ -38,10 +37,15 @@ run once and the figures are filled in. Replace **[TEAM]** items.
 - Show the Tomorrow view: band, generator strip, Why panel.
 
 **5. September: the test (2:40–3:20)**
-- **[FILL after the final test]** error, coverage, undersized and oversized
-  hours, next to the baseline.
-- September load is higher than anything in training. Say what happened in
-  the first week, and whether the margin widened as designed.
+- September was never seen: mean load 143 kW against 90 kW before, peak
+  462 kW against 395 kW in training.
+- Error 20.2% against 22.4% for the baseline. Coverage 88.7% (target 90%);
+  XGBoost P90 managed 80.4%.
+- Undersized hours: 2.4% with our upper estimate, about 10% for any
+  forecast used alone.
+- Say: "14 of the 15 undersized hours were in the first week of term. From
+  day 8 the margin had widened and there was one in three weeks."
+- The cost: the margin then stayed wide, and 48% of hours were oversized.
 
 **6. Where it fails (3:20–4:10)**
 - Missing meter data: without fallbacks a 6-hour gap removes 180 of 740
@@ -56,7 +60,7 @@ run once and the figures are filled in. Replace **[TEAM]** items.
 - ML is worth it here for the calibrated upper estimate and for holidays,
   not for a much better average.
 - Do not use it as an automatic switch, in the first week after a change of
-  term, or when the banner is not green.
+  term (September proved it), or when the banner is not green.
 - Open items: real generator ratings, fuel curves, the school calendar.
 
 ## Likely questions and short answers
@@ -128,4 +132,4 @@ calendar, and test whether a short intraday update (re-forecasting at
 
 - Two run-throughs with a timer; cut words, not slides.
 - In Q&A, each person answers questions on another person's stream.
-- [TEAM] Assign who presents slides 1–2, 3–5 and 6–7.
+- Assign who presents slides 1–2, 3–5 and 6–7 (Omar, Houssein, Sami).

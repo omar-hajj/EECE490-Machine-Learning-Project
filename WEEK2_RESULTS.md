@@ -196,9 +196,8 @@ what the API returns.
 
 ## What is still open
 
-- **September final test**: not run. Freeze first (features freeze
-  November 20), then score once with `scripts/final_test.py`
-  ([WEEK3_ANALYSIS.md](WEEK3_ANALYSIS.md), section 7).
+- **September final test**: run once on November 15; see
+  [FINAL_RESULTS.md](FINAL_RESULTS.md).
 - Done since (see `WEEK3_ANALYSIS.md`): Household 3 transfer check, error
   analysis, Why panel, Backtest page, Failure gallery.
 - **Docker**: `Dockerfile.app` and the two-service `docker-compose.yml` are

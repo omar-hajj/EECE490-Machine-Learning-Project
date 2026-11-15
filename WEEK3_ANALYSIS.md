@@ -1,9 +1,10 @@
 # Week 3 analysis: errors, explanations, transfer, Responsible ML
 
 Updated November 15, 2026. Everything here uses data before the reserved
-test months (Azm September 2026, Household 3 July 2025), which are **still
-unopened**. The numbers are development results; the September figures will
-be added once, by the procedure in the last section. Model choice and the
+test months (Azm September 2026, Household 3 July 2025) and was written
+**before** the September test. The test has since been run once; its
+results, and how the expectations below held up, are in
+[FINAL_RESULTS.md](FINAL_RESULTS.md). Household 3's July remains unopened. Model choice and the
 missing-input test are in [WEEK2_RESULTS.md](WEEK2_RESULTS.md).
 
 ## 1. Error analysis (Azm)
@@ -198,7 +199,7 @@ a home, so only the forecast and its upper estimate are scored.
 - **August was used for choices** (the fallback margin window, the method).
   Only September will be a clean estimate.
 
-## 7. Final test: procedure (not yet run)
+## 7. Final test: procedure (run on November 15; see FINAL_RESULTS.md)
 
 `scripts/final_test.py` is the only code that reads September. It runs the
 same rolling-origin procedure, settings and draft policy as above and
@@ -215,7 +216,12 @@ The real run writes `results/final_test_azm.json` and refuses to run again
 while that file exists. Before running it: freeze `config/walk_forward.json`
 and `config/azm_generators.json`, and commit.
 
-### Recommendation so far (to be confirmed or revised by September)
+### Recommendation before the test (the final one is in FINAL_RESULTS.md)
+
+September confirmed the two main expectations written here: the first week
+of term produced the undersized hours (14 of 15), and the ML value lies in
+the upper estimate rather than in accuracy. It added one finding: after the
+first-week misses the margin stayed too wide for the rest of the month.
 
 - **Is ML worth it over the baseline at Azm?** Modestly for accuracy
   (16.3% against 19.1%), clearly on holidays (15.9% against 41.5%), and
