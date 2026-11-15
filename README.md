@@ -13,6 +13,7 @@ site for checking that the method transfers.
 | [GENERATORS.md](GENERATORS.md) | Observed capacities, draft selection rule, wrong-generator metric |
 | [MODEL_RESULTS.md](MODEL_RESULTS.md), [BASELINE_RESULTS.md](BASELINE_RESULTS.md) | Week 1 baselines, Ridge, XGBoost, first P90 |
 | [DATA_PROVENANCE.md](DATA_PROVENANCE.md) | Sources, every change to the data, excluded files |
+| [docs/POSTER.md](docs/POSTER.md), [docs/PRESENTATION.md](docs/PRESENTATION.md) | Draft poster panels; 5-minute outline and prepared Q&A answers |
 | [CONTRIBUTIONS.md](CONTRIBUTIONS.md) | Who did what |
 | [PROJECT_PLAN.md](PROJECT_PLAN.md), [LOCATION_ONLY_RESULTS.md](LOCATION_ONLY_RESULTS.md) | Earlier scope and the exploratory location-only trial |
 
@@ -67,6 +68,27 @@ build commands above. Minimal API request:
 With no readings the answer uses the weekday-average fallback and says so in
 `input_status`. Readings are complete hourly averages in kW:
 `{"timestamp_local": "2026-08-09T23:00:00", "load_kw": 80.5, "pv_kw": 0.0}`.
+
+## Reproduce each results table
+
+Every command is run as `.\.venv\Scripts\python.exe scripts/<name>.py` from
+this folder, after `run_baselines.py` (Quick start). Outputs go to
+`outputs/`; scores are also appended to `results/run_log.csv`.
+
+| Table | Where | Script | Needs first |
+|---|---|---|---|
+| Baselines on validation | BASELINE_RESULTS.md | `run_baselines.py` (arguments in Quick start) | data ZIP |
+| Ridge / XGBoost per site, first P90 | MODEL_RESULTS.md | `train_ridge.py`, `train_xgboost.py`, `train_quantile.py` (arguments under "Model experiments") | baselines |
+| Daily peak error | MODEL_RESULTS.md | `score_daily_peaks.py` | Ridge, XGBoost |
+| Wrong-generator hours, August | GENERATORS.md | `score_generator_choice.py` | Ridge, XGBoost, P90 |
+| Point forecasts and upper estimates, May–August | WEEK2_RESULTS.md | `prepare_weather_features.py` (arguments in WEEK2_RESULTS.md), then `walk_forward.py` | baselines |
+| Operator practice vs. forecast rule | WEEK2_RESULTS.md | `build_hourly_generators.py --archive <zip>`, then `walk_forward.py` | baselines |
+| Missing inputs | WEEK2_RESULTS.md | `build_serving_bundle.py`, then `evaluate_missing_inputs.py` | baselines |
+| Leakage check | WEEK2_RESULTS.md | `check_leakage.py` | baselines |
+| Errors by condition, 3 worst days | WEEK3_ANALYSIS.md | `analyse_errors.py` | `walk_forward.py` |
+| Input effects (explainability) | WEEK3_ANALYSIS.md | `explain_model.py` | `build_serving_bundle.py` |
+| Household 3 transfer | WEEK3_ANALYSIS.md | `walk_forward.py --site household_3` | baselines |
+| September final test (once) | results/final_test_azm.json | `final_test.py --archive <zip> --open-test-set` | freeze and commit |
 
 Tested with Python 3.12 and 3.13. On some Windows machines the first import
 of scikit-learn after installing is blocked for a moment by Smart App
