@@ -18,7 +18,7 @@ model and say why"), the simpler model is kept.
 
 ## How it was tested: daily rolling origin
 
-`scripts/walk_forward_azm.py` forecasts every day from May 1 to August 31 at
+`scripts/walk_forward.py` forecasts every day from May 1 to August 31 at
 midnight, with models refitted only on hours before that midnight. Settings
 are fixed in advance (`config/walk_forward.json`), so no day tunes the model
 that forecasts it. All methods are compared on the same 2,694 hours
@@ -197,12 +197,10 @@ what the API returns.
 ## What is still open
 
 - **September final test**: not run. Freeze first (features freeze
-  November 20), then score once.
-- **Household 3 transfer check**: the rolling-origin script is still
-  Azm-only.
-- **Why panel, Backtest page, Failure gallery**: Week 3. The rolling-origin
-  predictions (`outputs/walk_forward/predictions.csv`) are the data for the
-  Backtest page and the 3 worst days.
+  November 20), then score once with `scripts/final_test.py`
+  ([WEEK3_ANALYSIS.md](WEEK3_ANALYSIS.md), section 7).
+- Done since (see `WEEK3_ANALYSIS.md`): Household 3 transfer check, error
+  analysis, Why panel, Backtest page, Failure gallery.
 - **Docker**: `Dockerfile.app` and the two-service `docker-compose.yml` are
   written but were not built on the machine used on November 15 (Docker is
   not installed there). Build them before the Week 2 gate.
@@ -214,7 +212,7 @@ what the API returns.
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/prepare_weather_features.py --archive '..\Data for EECE 490 Project.zip' --sites config/sites.json --baseline-dir outputs/baselines_confirmed_azm --output-dir outputs/weather_features
-.\.venv\Scripts\python.exe scripts/walk_forward_azm.py
+.\.venv\Scripts\python.exe scripts/walk_forward.py
 .\.venv\Scripts\python.exe scripts/check_leakage.py
 .\.venv\Scripts\python.exe scripts/build_serving_bundle.py
 .\.venv\Scripts\python.exe scripts/evaluate_missing_inputs.py

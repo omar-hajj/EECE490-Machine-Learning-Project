@@ -148,6 +148,8 @@ def run(net, holidays, configuration, first_day, end_day, progress=None, weather
                     for name, rows in features.items()}
         if len(training["plain"]) < configuration["minimum_training_rows"]:
             raise ValueError("Too little history before the first origin")
+        if any(len(rows) < 2 for rows in training.values()):
+            raise ValueError("A feature variant has no training rows before the first origin")
         models = {}
         candidates = {WEATHER_METHOD: ("weather", lambda: make_pipeline(configuration["ridge_alpha"]))} if weather is not None else {}
         for method, (variant, factory) in {**candidates, **{
@@ -190,7 +192,7 @@ def run(net, holidays, configuration, first_day, end_day, progress=None, weather
 
 
 def summarize(table, policy, quantile, periods):
-    generators, allowed, margin = policy
+    """policy is (generators, allowed configurations, margin), or None for a site without generators."""
     methods = POINT_METHODS + UPPER_METHODS
     if any(WEATHER_METHOD in entry for entry in table.values()):
         methods = POINT_METHODS + (WEATHER_METHOD,) + UPPER_METHODS
@@ -207,10 +209,11 @@ def summarize(table, policy, quantile, periods):
                    "maximum_actual_net_kw": max(actual), "point": {}, "upper": {}}
         for method in methods:
             forecast = [table[stamp][method] for stamp in hours]
-            choice = choice_errors(actual, forecast, generators, allowed_configurations=allowed,
-                                   reserve_margin_fraction=margin)
             kind = "upper" if method in UPPER_METHODS else "point"
-            entry = {"generator_choice": choice}
+            entry = {}
+            if policy is not None:
+                entry["generator_choice"] = choice_errors(actual, forecast, policy[0], allowed_configurations=policy[1],
+                                                          reserve_margin_fraction=policy[2])
             if kind == "point":
                 # Net load can be negative (PV surplus), so MAE is divided by the mean of |actual|.
                 errors = [abs(a - f) for a, f in zip(actual, forecast)]
@@ -269,28 +272,37 @@ def _percent(part, whole):
 
 
 def summary_markdown(report):
-    lines = ["# Azm rolling-origin results (net load)", "",
+    unit, sized = report["unit"], report["reserve_margin_fraction"] is not None
+    lines = [f"# {report['site_id']} rolling-origin results ({report['target']})", "",
              f"Each day is forecast at midnight by models refitted on earlier hours only. "
              f"{report['summary']['common_hours']} hours shared by every method, "
              f"{report['summary']['first_common_hour'][:10]} to {report['summary']['last_common_hour'][:10]}. "
-             "September is not read.", ""]
+             + ("THIS IS THE FINAL TEST MONTH." if report.get("test_period_scored")
+                else "The final test month is not read."), ""]
+
+    def choice_cells(entry, hours):
+        if not sized:
+            return ""
+        choice = entry["generator_choice"]
+        return (f" {_percent(choice['undersized_hours'], hours)} | "
+                f"{_percent(choice['oversized_hours'], hours)} |")
+
+    extra_header = " Undersized hours | Oversized hours |" if sized else ""
+    extra_rule = " ---: | ---: |" if sized else ""
     for label, section in report["summary"]["periods"].items():
-        lines += [f"## {label} ({section['hours']} hours, mean net load {section['mean_actual_net_kw']:.0f} kW, "
-                  f"highest {section['maximum_actual_net_kw']:.0f} kW)", "",
-                  "| Point forecast | nMAE | Largest error (kW) | Undersized hours | Oversized hours |",
-                  "| --- | ---: | ---: | ---: | ---: |"]
+        lines += [f"## {label} ({section['hours']} hours, mean {section['mean_actual_net_kw']:.0f} {unit}, "
+                  f"highest {section['maximum_actual_net_kw']:.0f} {unit})", "",
+                  f"| Point forecast | nMAE | Largest error ({unit}) |" + extra_header,
+                  "| --- | ---: | ---: |" + extra_rule]
         for method, entry in section["point"].items():
-            choice = entry["generator_choice"]
-            lines.append(f"| {method} | {entry['nmae']:.1%} | {entry['largest_error_kw']:.0f} | "
-                         f"{_percent(choice['undersized_hours'], section['hours'])} | "
-                         f"{_percent(choice['oversized_hours'], section['hours'])} |")
-        lines += ["", "| Upper estimate (target 90%) | Coverage | Pinball loss | Undersized hours | Oversized hours |",
-                  "| --- | ---: | ---: | ---: | ---: |"]
+            lines.append(f"| {method} | {entry['nmae']:.1%} | {entry['largest_error_kw']:.0f} |"
+                         + choice_cells(entry, section["hours"]))
+        lines += ["", "| Upper estimate (target 90%) | Coverage | Pinball loss |" + extra_header,
+                  "| --- | ---: | ---: |" + extra_rule]
         for method, entry in section["upper"].items():
-            choice, scores = entry["generator_choice"], entry["quantile_scores"]
-            lines.append(f"| {method} | {scores['empirical_hourly_coverage']:.1%} | {scores['pinball_loss']:.2f} | "
-                         f"{_percent(choice['undersized_hours'], section['hours'])} | "
-                         f"{_percent(choice['oversized_hours'], section['hours'])} |")
+            scores = entry["quantile_scores"]
+            lines.append(f"| {method} | {scores['empirical_hourly_coverage']:.1%} | {scores['pinball_loss']:.2f} |"
+                         + choice_cells(entry, section["hours"]))
         lines.append("")
     practice = report.get("operator_practice")
     if practice:
@@ -312,23 +324,36 @@ def main():
     from threadpoolctl import threadpool_limits
 
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--site", default="azm", help="azm (net load, with generator scoring) or another "
+                        "site id such as household_3 (load only: the transfer check)")
+    parser.add_argument("--first-origin", type=datetime.fromisoformat,
+                        help="First forecast day (default: config for Azm, 9 days after the first reading otherwise)")
     parser.add_argument("--baseline-dir", type=Path, default=Path("outputs/baselines_confirmed_azm"))
     parser.add_argument("--config", type=Path, default=Path("config/walk_forward.json"))
     parser.add_argument("--policy", type=Path, default=Path("config/azm_generators.json"))
     parser.add_argument("--hourly-generators", type=Path, default=Path("outputs/generators/azm_hourly_generators.csv"))
     parser.add_argument("--weather-features", type=Path, default=Path("outputs/weather_features/features.csv"),
                         help="Aligned forecast weather; the weather method is skipped when the file is absent")
-    parser.add_argument("--output-dir", type=Path, default=Path("outputs/walk_forward"))
+    parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
+    azm = args.site == "azm"
+    output_dir = args.output_dir or Path("outputs/walk_forward" if azm else f"outputs/walk_forward_{args.site}")
     configuration = json.loads(args.config.read_text(encoding="utf-8"))
     source, groups, series, _ = load_inputs(args.baseline_dir)
-    net = signed_net_series(series[("azm", "load")], series[("azm", "pv")])
-    end_day = datetime.fromisoformat(groups[("azm", "load")]["validation_end_exclusive"])
-    validation_start = datetime.fromisoformat(groups[("azm", "load")]["validation_start"])
-    first_day = datetime.fromisoformat(configuration["first_origin"])
+    group = groups[(args.site, "load")]
+    if azm:
+        net = signed_net_series(series[("azm", "load")], series[("azm", "pv")])
+        target, unit = "signed_net_load_kw = campus_load_kw - solar_pv_kw", "kW"
+    else:
+        net = series[(args.site, "load")]
+        target, unit = "load", group.get("power_unit") or "source units"
+    end_day = datetime.fromisoformat(group["validation_end_exclusive"])
+    validation_start = datetime.fromisoformat(group["validation_start"])
+    first_day = args.first_origin or (datetime.fromisoformat(configuration["first_origin"]) if azm
+                                      else min(net).replace(hour=0) + timedelta(days=16))
     holidays = set(load_public_holidays())
-    policy = load_policy(args.policy)
-    weather = read_weather(args.weather_features) if args.weather_features.is_file() else None
+    policy = load_policy(args.policy) if azm else None
+    weather = read_weather(args.weather_features) if azm and args.weather_features.is_file() else None
     with threadpool_limits(limits=1):
         table = run(net, holidays, configuration, first_day, end_day, weather=weather,
                     progress=lambda day: print(f"Forecast {day.date()}", flush=True) if day.day == 1 else None)
@@ -336,26 +361,26 @@ def main():
     month = first_day
     while month < end_day:
         following = (month.replace(day=1) + timedelta(days=32)).replace(day=1)
-        label = month.strftime("%B") + (" (validation)" if month >= validation_start else "")
+        label = month.strftime("%B %Y") + (" (validation)" if month >= validation_start else "")
         periods[label] = (month, following)
         month = following
-    report = {"run_time_utc": datetime.now(timezone.utc).isoformat(), "site_id": "azm",
-              "target": "signed_net_load_kw = campus_load_kw - solar_pv_kw", "configuration": configuration,
+    report = {"run_time_utc": datetime.now(timezone.utc).isoformat(), "site_id": args.site,
+              "target": target, "unit": unit, "configuration": configuration,
               "first_origin": first_day.isoformat(), "end_exclusive": end_day.isoformat(),
               "test_period_scored": False, "source_sha256": source["source_sha256"],
               "input_sha256": file_sha256(args.baseline_dir / "hourly_data.csv"),
-              "policy_sha256": file_sha256(args.policy), "code_sha256": file_sha256(Path(__file__)),
-              "reserve_margin_fraction": policy[2], "forecast_weather_method_scored": weather is not None,
+              "policy_sha256": file_sha256(args.policy) if azm else None, "code_sha256": file_sha256(Path(__file__)),
+              "reserve_margin_fraction": policy[2] if azm else None, "forecast_weather_method_scored": weather is not None,
               "summary": summarize(table, policy, configuration["quantile"], periods)}
-    if args.hourly_generators.is_file():
+    if azm and args.hourly_generators.is_file():
         report["operator_practice"] = operator_practice(table, args.hourly_generators, policy,
                                                         configuration["served_upper_method"])
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    (args.output_dir / "results.json").write_text(json.dumps(report, indent=2, allow_nan=False), encoding="utf-8")
-    (args.output_dir / "summary.md").write_text(summary_markdown(report), encoding="utf-8")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "results.json").write_text(json.dumps(report, indent=2, allow_nan=False), encoding="utf-8")
+    (output_dir / "summary.md").write_text(summary_markdown(report), encoding="utf-8")
     columns = ["timestamp_local", "issue_time_local", "actual", *POINT_METHODS,
                *([WEATHER_METHOD] if weather is not None else []), *UPPER_METHODS]
-    with (args.output_dir / "predictions.csv").open("w", encoding="utf-8", newline="") as stream:
+    with (output_dir / "predictions.csv").open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=columns)
         writer.writeheader()
         for stamp, entry in sorted(table.items()):
@@ -366,13 +391,14 @@ def main():
     for label, section in report["summary"]["periods"].items():
         for kind in ("point", "upper"):
             for method, entry in section[kind].items():
-                metrics = {"undersized_hours": entry["generator_choice"]["undersized_hours"],
-                           "oversized_hours": entry["generator_choice"]["oversized_hours"]}
+                metrics = {} if "generator_choice" not in entry else {
+                    "undersized_hours": entry["generator_choice"]["undersized_hours"],
+                    "oversized_hours": entry["generator_choice"]["oversized_hours"]}
                 if kind == "point":
                     metrics["nmae"] = entry["nmae"]
                 else:
                     metrics["coverage"] = entry["quantile_scores"]["empirical_hourly_coverage"]
-                logged += [{"run_time_utc": report["run_time_utc"], "script": "walk_forward_azm", "site_id": "azm",
+                logged += [{"run_time_utc": report["run_time_utc"], "script": "walk_forward", "site_id": args.site,
                             "split": label, "method": method, "metric": metric, "value": value,
                             "hours": section["hours"], "identifier_sha256": report["code_sha256"][:12]}
                            for metric, value in metrics.items()]

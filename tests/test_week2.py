@@ -138,10 +138,20 @@ class LeakageAndServingTests(unittest.TestCase):
         truth = load[issue + timedelta(hours=12)] - pv[issue + timedelta(hours=12)]
         self.assertAlmostEqual(full["hourly"][12]["net_kw"], truth, delta=5.0)
         self.assertGreaterEqual(full["hourly"][12]["net_upper_kw"], full["hourly"][12]["net_kw"] - 1e-6)
+        why = full["peak_drivers"]
+        self.assertTrue(why["available"])
+        self.assertLessEqual(len(why["drivers"]), 3)
+        from lebanon_energy.features.holidays import holiday_aware_features as build_features
+        from lebanon_energy.models.explain import contributions
+        net = {stamp: load[stamp] - pv[stamp] for stamp in load}
+        stamp = issue + timedelta(hours=12)
+        level, parts = contributions(bundle["models"]["net"], build_features(net, stamp, set())[0])
+        self.assertAlmostEqual(level + math.fsum(parts.values()), full["hourly"][12]["net_kw"], places=6)
         late = forecast(bundle, build_request(load, pv, issue, 6))
         self.assertEqual(late["input_status"]["net_hours_by_method"], {"ridge": 18, "last_week": 6})
         empty = forecast(bundle, build_request(load, pv, issue, None))
         self.assertEqual(empty["input_status"]["net_hours_by_method"], {"weekday_average": 24})
+        self.assertFalse(empty["peak_drivers"]["available"])
         self.assertTrue(all(row["generator"]["capacity_kw"] is not None for row in empty["hourly"]))
         nothing = forecast(bundle, build_request(load, pv, issue, None, apply_fallbacks=False))
         self.assertEqual(nothing["input_status"]["level"], "unavailable")

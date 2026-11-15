@@ -1,12 +1,12 @@
 # Streamlit operator page. It holds no model: it only calls the API (API_URL)
-# and reads the meter history file mounted at /app/data (see docker-compose.yml).
+# and reads logged results from the outputs folder mounted at /app/outputs
+# (see docker-compose.yml).
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    API_URL=http://api:8000 \
-    AZM_HISTORY_CSV=/app/data/hourly_data.csv
+    API_URL=http://api:8000
 
 WORKDIR /app
 

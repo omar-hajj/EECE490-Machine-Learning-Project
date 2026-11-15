@@ -23,6 +23,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from ..features.holidays import holiday_aware_features
 from ..generators.policy import Generator, hold_short_dips, recommend
 from ..models.baselines import predict
+from ..models.explain import contributions, describe
 from ..models.walk_forward import recent_error_margin
 
 DEFAULT_MODEL_PATH = 'outputs/serving/azm_bundle.joblib'
@@ -120,6 +121,24 @@ def _recent_errors(bundle, net, issue, holidays):
     return errors
 
 
+def _peak_drivers(bundle, net, hourly, holidays):
+    """Why the highest hour of the plan is what it is (exact Ridge contributions)."""
+    planned = [row for row in hourly if row['net_upper_kw'] is not None]
+    if not planned:
+        return {'available': False, 'reason': 'No forecast was produced.'}
+    peak = max(planned, key=lambda row: row['net_upper_kw'])
+    if peak['net_method'] != 'ridge' or not hasattr(bundle['models']['net'], 'named_steps'):
+        return {'available': False, 'timestamp_local': peak['timestamp_local'],
+                'reason': 'The peak hour uses a fallback, which has no input-by-input explanation.'}
+    stamp = datetime.fromisoformat(peak['timestamp_local'])
+    features, _ = holiday_aware_features(net, stamp, holidays)
+    level, parts = contributions(bundle['models']['net'], features)
+    return {'available': True, 'timestamp_local': peak['timestamp_local'], 'forecast_kw': peak['net_kw'],
+            'upper_kw': peak['net_upper_kw'], 'margin_kw': peak['margin_kw'], 'average_level_kw': level,
+            'is_public_holiday': stamp.date() in holidays,
+            'drivers': describe(features, parts, stamp, limit=3, holiday=stamp.date() in holidays)}
+
+
 def _input_status(methods, margin_basis, holiday_known):
     counts = Counter(methods)
     notes = []
@@ -204,6 +223,7 @@ def forecast(bundle, request):
         if row['generator']['held_through_short_dip']:
             row['generator'].update(capacity_kw=capacity, configurations=by_capacity[capacity])
     return {'site_id': 'azm', 'timezone': 'Asia/Beirut', 'units': 'kW', 'issue_time_local': issue.isoformat(),
+            'peak_drivers': _peak_drivers(bundle, net, hourly, holidays),
             'status': 'development_not_final_tested',
             'model_training_end_exclusive': bundle['training_end_exclusive'].isoformat(),
             'source_sha256': bundle['source_sha256'],

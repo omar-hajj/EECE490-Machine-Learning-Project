@@ -4,11 +4,12 @@ Day-ahead forecast of electricity load and solar production for Azm, used to
 recommend which diesel generator to run each hour. Household 3 is the second
 site for checking that the method transfers.
 
-**Status (November 15, 2026): Week 1 done, Week 2 built, September test not yet run.**
+**Status (November 15, 2026): Weeks 1 and 2 done, Week 3 analysis and pages built, September test not yet run.**
 
 | Read this | For |
 |---|---|
 | [WEEK2_RESULTS.md](WEEK2_RESULTS.md) | Model choice, generator advice, missing-input test, leakage check |
+| [WEEK3_ANALYSIS.md](WEEK3_ANALYSIS.md) | Error analysis, 3 worst days, explainability, distribution shift, human oversight, Household 3 transfer, limitations, final-test procedure |
 | [GENERATORS.md](GENERATORS.md) | Observed capacities, draft selection rule, wrong-generator metric |
 | [MODEL_RESULTS.md](MODEL_RESULTS.md), [BASELINE_RESULTS.md](BASELINE_RESULTS.md) | Week 1 baselines, Ridge, XGBoost, first P90 |
 | [DATA_PROVENANCE.md](DATA_PROVENANCE.md) | Sources, every change to the data, excluded files |
@@ -47,8 +48,17 @@ Build the hourly data and the served model, then start the API and the page:
 ```
 
 The API is at http://localhost:8000/docs and the page at
-http://localhost:8501. With Docker, `docker compose up --build` starts both
-after the two build commands above. Minimal API request:
+http://localhost:8501. The Backtest page and Failure gallery also need the
+logged results (about 4 minutes):
+
+```powershell
+.\.venv\Scripts\python.exe scripts/walk_forward.py
+.\.venv\Scripts\python.exe scripts/build_backtest_table.py
+.\.venv\Scripts\python.exe scripts/analyse_errors.py
+```
+
+With Docker, `docker compose up --build` starts both services after the
+build commands above. Minimal API request:
 
 ```json
 {"issue_time_local": "2026-08-10T00:00:00", "readings": []}
@@ -71,8 +81,8 @@ under `src/lebanon_energy/`:
 |---|---|---|
 | `data/` | Read the source ZIP, prepare complete hourly data, weather, calendar, data checks | `preparation`, `audit`, `weather`, `azm_weather`, `calendar_days`, `data_checks` |
 | `features/` | Model inputs known at the midnight issue time | `history`, `holidays`, `village` |
-| `models/` | Baselines, Ridge, XGBoost, P90 quantile model, backtests, rolling-origin check, served bundle, location-only trial | `baselines`, `ridge`, `boosting`, `quantiles`, `azm_backtest`, `walk_forward`, `serving`, `location_trial` |
-| `evaluation/` | Error metrics, daily peak error, wrong-generator hours, missing-input test, leakage check, run log | `metrics`, `peak_scores`, `generator_choice`, `missing_inputs`, `leakage`, `run_log` |
+| `models/` | Baselines, Ridge, XGBoost, P90 quantile model, backtests, rolling-origin check, served bundle, exact explanations, location-only trial | `baselines`, `ridge`, `boosting`, `quantiles`, `azm_backtest`, `walk_forward`, `serving`, `explain`, `location_trial` |
+| `evaluation/` | Error metrics, daily peak error, wrong-generator hours, missing-input test, leakage check, error analysis, backtest table, one-shot final test, run log | `metrics`, `peak_scores`, `generator_choice`, `missing_inputs`, `leakage`, `error_analysis`, `backtest_table`, `final_test`, `run_log` |
 | `generators/` | Generator capacities, operating pattern, selection rule | `capacity`, `policy` |
 | `api/` | FastAPI forecast and generator-advice service | `service` |
 | `app/` | Streamlit operator page | `main` |
