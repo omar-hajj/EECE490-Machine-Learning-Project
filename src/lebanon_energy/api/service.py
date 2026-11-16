@@ -84,6 +84,74 @@ class ForecastRequest(BaseModel):
         return self
 
 
+class SiteReading(BaseModel):
+    model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
+    timestamp_local: datetime
+    net_kw: float
+
+
+class SiteGenerator(BaseModel):
+    model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
+    generator_id: str = Field(min_length=1, max_length=40)
+    usable_capacity_kw: float = Field(gt=0)
+
+
+class SiteForecastRequest(BaseModel):
+    """History and equipment of a site the service has no model for."""
+    model_config = ConfigDict(extra='forbid')
+    site_name: str = Field(default='New site', max_length=80)
+    location: str = Field(default='', max_length=120, description='Free text; kept with the answer, not used by the model')
+    use_lebanese_holidays: bool = Field(default=True, description='Treat Lebanese public holidays as days off; '
+                                        'switch off for a site outside Lebanon')
+    readings: list[SiteReading] = Field(min_length=1, max_length=60000)
+    issue_time_local: datetime | None = Field(default=None, description='Midnight of the day to forecast; '
+                                              'default is the day after the last reading')
+    generators: list[SiteGenerator] = Field(default_factory=list, max_length=8)
+    allow_parallel: bool = False
+    reserve_margin_fraction: float = Field(default=0.1, ge=0, le=1)
+    minimum_run_hours: int = Field(default=3, ge=1, le=24)
+
+    @model_validator(mode='after')
+    def check(self):
+        seen = set()
+        for reading in self.readings:
+            stamp = reading.timestamp_local
+            if stamp.tzinfo is not None or any((stamp.minute, stamp.second, stamp.microsecond)):
+                raise ValueError('Readings must be whole hours in local time without a UTC offset')
+            if stamp in seen:
+                raise ValueError('Duplicate reading timestamp')
+            seen.add(stamp)
+        issue = self.issue_time_local
+        if issue is not None and (issue.tzinfo is not None or any((issue.hour, issue.minute, issue.second, issue.microsecond))):
+            raise ValueError('Issue time must be a midnight in local time without a UTC offset')
+        if len({unit.generator_id for unit in self.generators}) != len(self.generators):
+            raise ValueError('Generator names must be unique')
+        return self
+
+
+def _public_holidays():
+    """Lebanese public holidays if the list is available; an empty set otherwise."""
+    from ..data.calendar_days import DEFAULT_PATH, load_public_holidays
+    for path in (Path('config/lebanon_public_holidays.csv'), DEFAULT_PATH):
+        if path.is_file():
+            return set(load_public_holidays(path))
+    return set()
+
+
+def site_forecast(request):
+    from ..models.site_forecast import forecast_site
+    series = {reading.timestamp_local: reading.net_kw for reading in request.readings}
+    issue = request.issue_time_local or (max(series) + timedelta(hours=1)).replace(hour=0)
+    if issue.hour:
+        issue = issue.replace(hour=0) + timedelta(days=1)
+    result = forecast_site(series, issue, _public_holidays() if request.use_lebanese_holidays else set(),
+                           [unit.model_dump() for unit in request.generators], allow_parallel=request.allow_parallel,
+                           reserve_margin_fraction=request.reserve_margin_fraction,
+                           minimum_run_hours=request.minimum_run_hours)
+    return {'site_name': request.site_name, 'location': request.location,
+            'holiday_calendar': 'Lebanon' if request.use_lebanese_holidays else 'none', **result}
+
+
 def _chain(series, model, profile, stamp, holidays, apply_fallbacks=True):
     """Main model, then last week's reading, then the stored weekday profile."""
     features, available = holiday_aware_features(series, stamp, holidays)
@@ -266,6 +334,14 @@ def create_app(bundle=None):
             return forecast(bundle, request)
         except ValueError as error:
             raise HTTPException(422, str(error)) from error
+    @app.post('/sites/forecast')
+    def new_site(request: SiteForecastRequest):
+        """Forecast a site from its own uploaded history (no stored model is used)."""
+        try:
+            return site_forecast(request)
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from error
+
     return app
 
 

@@ -156,6 +156,43 @@ class LeakageAndServingTests(unittest.TestCase):
         nothing = forecast(bundle, build_request(load, pv, issue, None, apply_fallbacks=False))
         self.assertEqual(nothing["input_status"]["level"], "unavailable")
 
+    def test_new_site_forecast_from_uploaded_history(self):
+        from fastapi.testclient import TestClient
+        from lebanon_energy.api.service import create_app
+
+        client = TestClient(create_app({}))
+        shape = lambda stamp: 60.0 + 4 * stamp.hour + (40 if stamp.weekday() < 5 and 8 <= stamp.hour < 17 else 0)
+        readings = [{"timestamp_local": (START + timedelta(hours=h)).isoformat(), "net_kw": shape(START + timedelta(hours=h))}
+                    for h in range(40 * 24)]
+        body = {"site_name": "Workshop", "readings": readings,
+                "generators": [{"generator_id": "A", "usable_capacity_kw": 120}, {"generator_id": "B", "usable_capacity_kw": 250}]}
+        response = client.post("/sites/forecast", json=body)
+        self.assertEqual(response.status_code, 200, response.text)
+        data = response.json()
+        issue = START + timedelta(days=40)
+        self.assertEqual(data["issue_time_local"], issue.isoformat())
+        self.assertEqual(len(data["hourly"]), 24)
+        self.assertEqual(data["input_status"]["level"], "full")
+        noon = data["hourly"][12]
+        self.assertAlmostEqual(noon["net_kw"], shape(issue + timedelta(hours=12)), delta=3.0)
+        self.assertGreaterEqual(noon["net_upper_kw"], noon["net_kw"] - 1e-6)
+        self.assertEqual(noon["generator"]["configurations"], [["B"]])
+        self.assertEqual(data["hourly"][2]["generator"]["configurations"], [["A"]])
+        self.assertLess(data["history_check"]["mae_kw"], 3.0)
+        self.assertEqual(data["generator_policy"]["allowed_configurations"], [["A"], ["B"]])
+        parallel = client.post("/sites/forecast", json={**body, "allow_parallel": True}).json()
+        self.assertIn(["A", "B"], parallel["generator_policy"]["allowed_configurations"])
+        plain = client.post("/sites/forecast", json={"readings": readings}).json()
+        self.assertIsNone(plain["generator_policy"])
+        self.assertEqual(plain["hourly"][12]["generator"]["status"], "unavailable")
+        short = client.post("/sites/forecast", json={"readings": readings[:5 * 24]})
+        self.assertEqual(short.status_code, 422)
+        self.assertIn("At least 14 days", short.text)
+        for bad in ({"readings": readings[:2] + readings[:1]},
+                    {"readings": [{"timestamp_local": "2026-06-01T00:30:00", "net_kw": 1}]},
+                    {"readings": readings, "generators": [{"generator_id": "A", "usable_capacity_kw": 0}]}):
+            self.assertEqual(client.post("/sites/forecast", json=bad).status_code, 422)
+
     def test_run_log_appends_with_one_header(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "log.csv"

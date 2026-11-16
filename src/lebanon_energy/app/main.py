@@ -36,17 +36,18 @@ MISSING_OPTIONS = {"Nothing missing": 0, "Last 6 hours of meter data": 6,
 
 # Ink, greys and lines. Every grey that carries words is at least 4.5:1 on white.
 INK, SECONDARY, MUTED = "#171717", "#4d4d4d", "#666666"
-GROUND, SURFACE, EDGE, GRID = "#fafafa", "#ffffff", "#ebebeb", "#efefef"
+GROUND, SURFACE, EDGE, GRID = "#f3f6fb", "#ffffff", "#dfe5ee", "#e9edf3"
+ACCENT, ACCENT_DEEP, ACCENT_PALE, WARM = "#2563eb", "#1d4ed8", "#e6efff", "#c2410c"
 # One data hue: the forecast. Actuals are ink, the baseline is grey.
-FORECAST, BAND, ACTUAL, BASELINE = "#2a78d6", "rgba(42,120,214,0.14)", INK, "#8a8f94"
-# Capacity ramp, one hue from light to dark: a bigger generator set is a darker cell.
-CAPACITY_STEPS = ["#d6e6f8", "#a9caf0", "#74a9e6", "#2a78d6", "#1d5aa8", "#123c73"]
+FORECAST, BAND, ACTUAL, BASELINE = ACCENT, "rgba(37,99,235,0.20)", INK, "#ea580c"
+# Capacity ramp, mint through blue to deep indigo: a bigger generator set is a darker, cooler cell.
+CAPACITY_STEPS = ["#8fe0c8", "#3fbfd0", "#2a8fe0", "#2f5fd6", "#3d3bb5", "#2a2175"]
 UNAVAILABLE = "#f1f2f4"
 # Status pairs (pale fill, dark text of the same hue) and the negative signal.
 STATUS = {"full": ("#e3f6ea", "#0c4a26", "#bfe6cd", "Inputs complete"),
           "fallback": ("#fff7e0", "#7a4a05", "#f3dc9a", "Fallback in use"),
           "unavailable": ("#ffedea", "#831c1e", "#f5c6c0", "No forecast")}
-NEGATIVE, OVER_FILL, OVER_TEXT = "#c4242a", "#fdf0c8", "#7a4a05"
+NEGATIVE, OVER_FILL, OVER_TEXT = "#dc2626", "#fbd35a", "#4a2f00"
 PLAIN = dict(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
              font=dict(color=INK, family="Segoe UI, Helvetica Neue, Arial, sans-serif", size=13))
 NO_TOOLBAR = {"displayModeBar": False}
@@ -70,7 +71,15 @@ h3 {{ font-size: 15px !important; font-weight: 600 !important; letter-spacing: -
 .finding b {{ color: {INK}; font-weight: 600; }}
 .stamp {{ font-size: 13px; color: {MUTED}; text-align: right; padding-top: 8px; line-height: 20px; }}
 .pill {{ display: inline-block; font-size: 12px; font-weight: 500; line-height: 20px; padding: 0 9px; border-radius: 999px; border: 1px solid; white-space: nowrap; margin-bottom: 4px; }}
-.scope {{ font-size: 13px; color: {MUTED}; margin: -6px 0 10px 2px; }}
+.navhead {{ font-size: 12px; color: {MUTED}; margin: 6px 0 -6px 10px; }}
+[class*="st-key-nav_"] [data-testid="stRadioGroup"] {{ gap: 2px; }}
+[class*="st-key-nav_"] [data-testid="stRadioOption"] {{ width: 100%; margin: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }}
+[class*="st-key-nav_"] [data-testid="stRadioOption"] > span:first-child {{ display: none !important; }}
+[class*="st-key-nav_"] [data-testid="stRadioOption"]:hover {{ background: rgba(37,99,235,0.07); }}
+[class*="st-key-nav_"] [data-testid="stRadioOption"]:has(input:checked) {{ background: {ACCENT_PALE}; }}
+[class*="st-key-nav_"] [data-testid="stRadioOption"]:has(input:checked) p {{ color: {ACCENT_DEEP}; font-weight: 600; }}
+[class*="st-key-nav_"] [data-testid="stRadioOption"]:has(input:focus-visible) {{ outline: 2px solid {ACCENT}; outline-offset: 1px; }}
+[data-testid="stSidebar"] hr {{ margin: 10px 0; border-color: {EDGE}; }}
 .legend {{ display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: {SECONDARY}; margin: 0 0 2px 56px; }}
 .legend span {{ white-space: nowrap; }}
 .legend i {{ display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }}
@@ -87,6 +96,15 @@ h3 {{ font-size: 15px !important; font-weight: 600 !important; letter-spacing: -
 .kpis {{ display: grid; background: {SURFACE}; border: 1px solid {EDGE}; border-radius: 8px; margin-bottom: 16px; }}
 .kpis > div {{ padding: 14px 18px 15px 18px; border-left: 1px solid {EDGE}; min-width: 0; }}
 .kpis > div:first-child {{ border-left: 0; }}
+.kpis {{ border-top: 3px solid {ACCENT}; overflow: hidden; }}
+.kpis .lead {{ background: {ACCENT_PALE}; }}
+.kpis .lead .value {{ color: {ACCENT_DEEP}; }}
+.why td.pos {{ color: {ACCENT_DEEP}; }}
+.why td.neg {{ color: {WARM}; }}
+[data-testid="stSidebarNavLink"][aria-current="page"] {{ background: {ACCENT_PALE} !important; }}
+[data-testid="stSidebarNavLink"][aria-current="page"] span {{ color: {ACCENT_DEEP} !important; font-weight: 600; }}
+[class*="st-key-card"] h3 {{ border-left: 3px solid {ACCENT}; padding-left: 9px !important; }}
+.finding b {{ color: {ACCENT_DEEP} !important; }}
 .kpis .label {{ font-size: 13px; color: {MUTED}; }}
 .kpis .value {{ font-size: 26px; line-height: 1.25; color: {INK}; font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: -0.03em; }}
 .kpis .lead .value {{ font-size: 32px; font-weight: 600; }}
@@ -252,7 +270,7 @@ def capacity_colours(capacities):
 
 def capacity_lane(name, capacities, labels, hover, colours):
     fills = [colours.get(capacity, UNAVAILABLE) for capacity in capacities]
-    return name, fills, labels, hover, ["#ffffff" if fill in CAPACITY_STEPS[3:] else INK for fill in fills]
+    return name, fills, labels, hover, ["#ffffff" if fill in CAPACITY_STEPS[2:] else INK for fill in fills]
 
 
 def strip_figure(hours, lanes):
@@ -292,10 +310,10 @@ def why_card(drivers):
     hour = drivers["timestamp_local"][11:16]
     rows = [f'<tr><td class="dim">An average hour</td><td class="kw">{drivers["average_level_kw"]:.0f} kW</td></tr>']
     for driver in drivers["drivers"]:
-        rows.append(f'<tr><td>{escape(driver["text"])}</td><td class="kw">{driver["effect_kw"]:+.0f} kW</td></tr>')
+        rows.append(f'<tr><td>{escape(driver["text"])}</td><td class="kw {"pos" if driver["effect_kw"] > 0 else "neg"}">{driver["effect_kw"]:+.0f} kW</td></tr>')
     rows.append(f'<tr class="total"><td>Forecast at {hour}</td><td class="kw">{drivers["forecast_kw"]:.0f} kW</td></tr>')
     rows.append(f'<tr><td>Safety margin: the upper range of recent errors at {hour}</td>'
-                f'<td class="kw">+{drivers["margin_kw"]:.0f} kW</td></tr>')
+                f'<td class="kw pos">+{drivers["margin_kw"]:.0f} kW</td></tr>')
     rows.append(f'<tr class="total"><td><b>Plan for</b></td><td class="kw">{drivers["upper_kw"]:.0f} kW</td></tr>')
     st.html(f'<table class="why">{"".join(rows)}</table>')
     st.html('<p class="cardnote">The three largest effects are shown; the model is linear, so effects add up exactly.</p>')
@@ -319,7 +337,7 @@ def tomorrow_page():
         show_actual = st.toggle("Show what actually happened", value=False,
                                 help="Only for past days. Never shown to the model.")
     issue = datetime.combine(day, datetime.min.time())
-    title = f"Plan for {day:%A %d %B %Y}"
+    title = f"Azm: plan for {day:%A %d %B %Y}"
     try:
         data = request_forecast(issue, history, MISSING_OPTIONS[missing_label])
     except urllib.error.HTTPError as error:
@@ -467,7 +485,7 @@ def backtest_page():
                             help="Each day was forecast at midnight by a model fitted on earlier data only.")
     stamp = f"Logged forecasts, {usable[0]:%d %b} to {usable[-1]:%d %b %Y}"
     if day not in days or not day_scores(days[day]):
-        header(f"Backtest: {day:%A %d %B %Y}", "No logged forecast for this day: the meter data is incomplete.", stamp)
+        header(f"Azm backtest: {day:%A %d %B %Y}", "No logged forecast for this day: the meter data is incomplete.", stamp)
         return
     scores = day_scores(days[day])
     better = scores["model"] < scores["baseline"]
@@ -475,7 +493,7 @@ def backtest_page():
                f"{'better' if better else 'worse'} than the baseline's {scores['baseline']:.0f} kW. "
                + (f"The rule picked too small a unit in <b>{scores['undersized']} hour{'s' if scores['undersized'] != 1 else ''}</b>."
                   if scores["undersized"] else "The rule never picked too small a unit."))
-    header(f"Backtest: {day:%A %d %B %Y}", finding, stamp)
+    header(f"Azm backtest: {day:%A %d %B %Y}", finding, stamp)
     day_strip(scores)
     with card("backtest"):
         card_title("Forecast against what happened", "Picked: what the rule would have run. Needed: the smallest "
@@ -493,7 +511,7 @@ def failure_page():
     colours = all_capacity_colours(days)
     worst = analysis["worst_days"]
     under = sum("Under-forecast" in failure["explanation"] for failure in worst)
-    header("Where the forecast failed",
+    header("Azm: where the forecast failed",
            f"The three worst days of {analysis['hours']:,} logged hours: <b>{under} under-forecast"
            f"{'s' if under != 1 else ''}</b> (the unsafe direction) and {len(worst) - under} over-forecast"
            f"{'s' if len(worst) - under != 1 else ''}. Explanations state what the data shows, not confirmed causes.",
@@ -507,15 +525,290 @@ def failure_page():
                 backtest_day(days[day], colours, height=250)
 
 
-def main():
-    st.set_page_config(page_title="Azm generators", layout="wide")
-    st.html(CSS)
-    st.logo(LOGO, size="large")
-    st.sidebar.html('<div class="scope">Azm campus · day-ahead plan</div>')
-    pages = [st.Page(tomorrow_page, title="Tomorrow", url_path="tomorrow", default=True),
-             st.Page(backtest_page, title="Backtest", url_path="backtest"),
-             st.Page(failure_page, title="Failure gallery", url_path="failures")]
-    st.navigation(pages, position="sidebar").run()
+# ---------- new site ----------
 
+TIME_COLUMNS = ("timestamp", "timestamp_local", "time", "datetime", "date")
+LOAD_COLUMNS = ("load_kw", "load", "load power", "load_power", "demand", "consumption", "load power (w)", "load_w")
+PV_COLUMNS = ("pv_kw", "pv", "solar", "production", "pv power (w)", "pv_w")
+TIME_FORMATS = ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%d/%m/%Y %H:%M:%S", "%d/%m/%Y %H:%M", "%m/%d/%Y %H:%M")
+TEMPLATE = "timestamp,load_kw,pv_kw\n2026-08-01 00:00,82.4,0\n2026-08-01 01:00,80.9,0\n2026-08-01 02:00,79.6,0\n"
+
+
+def parse_time(text):
+    text = text.strip()
+    try:
+        return datetime.fromisoformat(text.replace("Z", "")).replace(tzinfo=None)
+    except ValueError:
+        for pattern in TIME_FORMATS:
+            try:
+                return datetime.strptime(text, pattern)
+            except ValueError:
+                continue
+    raise ValueError(f"Cannot read the time '{text}'")
+
+
+def parse_history(content, scale):
+    """Hourly net load {timestamp: kW} from an uploaded CSV, plus a short description of what was read.
+
+    Readings finer than an hour are averaged into the hour. Net load is load
+    minus PV when a PV column is present, otherwise the load itself.
+    """
+    rows = list(csv.DictReader(content.decode("utf-8-sig").splitlines()))
+    if not rows:
+        raise ValueError("The file has no data rows.")
+    names = {name.strip().lower(): name for name in rows[0] if name}
+    pick = lambda options: next((names[option] for option in options if option in names), None)
+    time_column, load_column, pv_column = pick(TIME_COLUMNS), pick(LOAD_COLUMNS), pick(PV_COLUMNS)
+    if time_column is None or load_column is None:
+        raise ValueError("The file needs a 'timestamp' column and a 'load_kw' column. Found: " + ", ".join(rows[0]))
+    buckets, skipped = {}, 0
+    for row in rows:
+        try:
+            stamp = parse_time(row[time_column]).replace(minute=0, second=0, microsecond=0)
+            load = float(row[load_column])
+            pv = float(row[pv_column]) if pv_column and row[pv_column] not in ("", None) else 0.0
+        except (ValueError, TypeError):
+            skipped += 1
+            continue
+        buckets.setdefault(stamp, []).append((load - pv) * scale)
+    if not buckets:
+        raise ValueError("No row could be read. Check the time format, for example 2026-08-01 13:00.")
+    net = {stamp: sum(values) / len(values) for stamp, values in buckets.items()}
+    days = len({stamp.date() for stamp in net})
+    note = (f"{len(net):,} hours over {days} days, {min(net):%d %b %Y} to {max(net):%d %b %Y}. "
+            + ("Net load = load minus PV. " if pv_column else "No PV column: the load itself is forecast. ")
+            + (f"{skipped} unreadable rows were skipped." if skipped else ""))
+    return net, note
+
+
+def request_site_forecast(name, net, generators, parallel, reserve, minimum_run, location="", lebanese_holidays=True):
+    body = json.dumps({"site_name": name or "New site", "location": location, "use_lebanese_holidays": lebanese_holidays,
+                       "readings": [{"timestamp_local": stamp.isoformat(), "net_kw": value} for stamp, value in sorted(net.items())],
+                       "generators": generators, "allow_parallel": parallel, "reserve_margin_fraction": reserve,
+                       "minimum_run_hours": minimum_run}).encode("utf-8")
+    call = urllib.request.Request(f"{API_URL}/sites/forecast", data=body, headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(call, timeout=120) as response:
+        return json.load(response)
+
+
+def site_result(data):
+    rows, policy, status = data["hourly"], data["generator_policy"], data["input_status"]
+    hours = [datetime.fromisoformat(row["timestamp_local"]) for row in rows]
+    available = [row for row in rows if row["net_upper_kw"] is not None]
+    day = hours[0]
+    if not available:
+        notice("unavailable", status["message"])
+        return
+    peak = max(available, key=lambda row: row["net_upper_kw"])
+    forecast_peak = max(available, key=lambda row: row["net_kw"])
+    labels = [configuration_label(row) if policy else "" for row in rows]
+    items = [("Highest load to plan for", f"{peak['net_upper_kw']:.0f}", "kW", f"at {peak['timestamp_local'][11:16]}", "lead"),
+             ("Forecast peak", f"{forecast_peak['net_kw']:.0f}", "kW", f"at {forecast_peak['timestamp_local'][11:16]}, before the safety margin", "")]
+    if policy:
+        largest = max(available, key=lambda row: row["generator"]["capacity_kw"] or 0)
+        blocks = switch_blocks(labels, hours)
+        short = any(row["generator"]["status"] == "insufficient_available_capacity" for row in rows)
+        items += [("Largest unit needed", configuration_label(largest),
+                   f"{largest['generator']['capacity_kw']:.0f} kW" if largest["generator"]["capacity_kw"] else "",
+                   "the generators entered cannot cover some hours" if short else "", "bad" if short else ""),
+                  ("Generator changes", max(len(blocks) - 1, 0), "", "during the day", "")]
+    items.append(("History used", data["history_days"], "days", f"{data['history_hours']:,} hours", ""))
+    notice(status["level"], status["message"])
+    kpi_strip(items)
+    if policy:
+        colours = capacity_colours({sum(policy["capacities_kw"][unit] for unit in option)
+                                    for option in policy["allowed_configurations"]})
+        hover = [f"{row['timestamp_local'][11:16]}  Run {label}" for row, label in zip(rows, labels)]
+        strip, plan = st.columns([5, 3], gap="medium")
+        with strip, card("site-strip"):
+            card_title("Generator to run each hour", f"A dip shorter than {policy['minimum_run_hours']} hours stays on "
+                       f"the larger unit. Reserve margin {policy['reserve_margin_fraction']:.0%}.")
+            st.plotly_chart(strip_figure(hours, [capacity_lane("Run", [row["generator"]["capacity_kw"] for row in rows],
+                                                               labels, hover, colours)]),
+                            use_container_width=True, config=NO_TOOLBAR)
+            st.html(capacity_legend(policy, colours))
+        with plan, card("site-plan"):
+            card_title("Plan")
+            capacity_of = {configuration_label(row): row["generator"]["capacity_kw"] for row in rows}
+            body = "".join(
+                f'<tr><td>{start:%H:%M} <span class="dim">to</span> {"24:00" if end.date() != start.date() else f"{end:%H:%M}"}</td>'
+                f'<td class="run"><i style="background:{colours.get(capacity_of.get(label), UNAVAILABLE)}"></i>{escape(label)}</td>'
+                f'<td class="num">{"" if not capacity_of.get(label) else f"{capacity_of[label]:.0f} kW"}</td>'
+                f'<td class="num dim">{int((end - start).total_seconds() // 3600)} h</td></tr>'
+                for start, end, label in blocks)
+            st.html('<table class="plan"><tr><th>When</th><th>Run</th><th class="num">Capacity</th>'
+                    f'<th class="num">For</th></tr>{body}</table>')
+    with card("site-load"):
+        card_title("Net load forecast", "Hourly average. About 9 hours in 10 stay below the upper estimate.")
+        st.plotly_chart(load_figure(hours, [row["net_kw"] for row in rows], [row["net_upper_kw"] for row in rows]),
+                        use_container_width=True, config=NO_TOOLBAR)
+    check = data["history_check"]
+    if check:
+        with card("site-check"):
+            card_title("How the method did on this site's own history",
+                       f"The last {check['days']} days, each forecast from earlier data only. This is the only evidence "
+                       "for this site: it has not been tested on held-out data.")
+            better = check["mae_kw"] < check["baseline_mae_kw"]
+            coverage = check["upper_coverage"]
+            kpi_strip([
+                ("Forecast error", f"{check['mae_kw']:.1f}", "kW", "" if check["nmae"] is None else f"{check['nmae']:.0%} of the average load", "lead"),
+                ("Baseline error", f"{check['baseline_mae_kw']:.1f}", "kW", "same hour last week", ""),
+                ("Against the baseline", "better" if better else "worse", "", "the model should beat it to be worth using", "" if better else "bad"),
+                ("Hours below the upper estimate", "–" if coverage is None else f"{coverage:.0%}", "", "target 90%",
+                 "bad" if coverage is not None and coverage < 0.8 else ""),
+            ])
+    with st.expander("Hour-by-hour numbers"):
+        st.dataframe([{"Hour": row["timestamp_local"][11:16],
+                       "Forecast (kW)": None if row["net_kw"] is None else round(row["net_kw"], 1),
+                       "Upper estimate (kW)": None if row["net_upper_kw"] is None else round(row["net_upper_kw"], 1),
+                       **({"Run": label, "Capacity (kW)": row["generator"]["capacity_kw"]} if policy else {}),
+                       "Method": row["net_method"]} for row, label in zip(rows, labels)],
+                     hide_index=True, use_container_width=True)
+    with st.expander("Limits of this plan"):
+        for line in data["limitations"]:
+            st.markdown(f"- {line}")
+
+
+def unique_site_name(name, existing):
+    name = (name or "").strip() or f"Site {len(existing) + 1}"
+    candidate, count = name, 2
+    while candidate in existing or candidate in (AZM, ADD_SITE):
+        candidate, count = f"{name} ({count})", count + 1
+    return candidate
+
+
+def new_site_page():
+    header("Add a site", "Upload the site's hourly history, say where it is and which generators it has. "
+           "It then appears in the list of sites on the left. <b>It is kept for this browser session only.</b>",
+           "At least 14 days of history; 5 weeks or more is better")
+    state = st.session_state
+    left, right = st.columns([1, 1], gap="medium")
+    with left, card("site-history"):
+        card_title("1. Site and history", "A CSV with a timestamp column and load_kw; pv_kw is optional. Finer than "
+                   "hourly is averaged to hours.")
+        name = st.text_input("Site name", value=state.get("site_name", ""), placeholder="For example: North campus")
+        location = st.text_input("Location", value=state.get("site_location", ""), placeholder="Town, or latitude and longitude",
+                                 help="Shown with the plan. The forecast itself is learned from the site's own readings; "
+                                      "location only decides which public holidays apply.")
+        holidays = st.radio("Public holidays", ["Lebanon", "None (site outside Lebanon)"], horizontal=True,
+                            help="Holidays are treated as days off. Choose None for a site in another country.")
+        upload = st.file_uploader("Hourly history (CSV)", type=["csv"])
+        unit = st.radio("Power unit in the file", ["kW", "W"], horizontal=True)
+        first, second = st.columns(2)
+        first.download_button("Download a template", TEMPLATE, file_name="site_history_template.csv", mime="text/csv",
+                              use_container_width=True)
+        example = second.button("Fill in an example", use_container_width=True,
+                                help="Loads Azm's prepared history and its four generators as a second site, to see how this works.")
+    if example and HISTORY_CSV.is_file():
+        history = load_history(str(HISTORY_CSV), HISTORY_CSV.stat().st_mtime)
+        state["site_net"] = {stamp: history["load"][stamp] - history["pv"][stamp]
+                             for stamp in history["load"].keys() & history["pv"].keys()}
+        state["site_note"] = "Example: Azm's prepared hourly history, net load = load minus PV."
+        state["site_name"], state["site_location"] = "Example campus", "Tripoli, Lebanon"
+        state["site_units"] = [{"Name": "G3", "Capacity (kW)": 146.1}, {"Name": "G2", "Capacity (kW)": 236.8},
+                               {"Name": "G4", "Capacity (kW)": 315.0}, {"Name": "G1", "Capacity (kW)": 413.4}]
+        st.rerun()
+    if upload is not None and state.get("site_file") != (upload.name, upload.size, unit):
+        try:
+            state["site_net"], state["site_note"] = parse_history(upload.getvalue(), 0.001 if unit == "W" else 1.0)
+            state["site_file"] = (upload.name, upload.size, unit)
+        except (ValueError, UnicodeDecodeError) as error:
+            state.pop("site_net", None)
+            state["site_note"] = None
+            with left:
+                notice("unavailable", str(error))
+    if state.get("site_net") and state.get("site_note"):
+        with left:
+            st.html(f'<p class="cardnote">Read: {escape(state["site_note"])}</p>')
+    with right, card("site-generators"):
+        card_title("2. Generators (optional)", "One row per unit. Leave empty for a load forecast without a "
+                   "generator plan.")
+        units = st.data_editor(state.get("site_units", [{"Name": "", "Capacity (kW)": None}]), num_rows="dynamic",
+                               use_container_width=True, key="site_units_editor",
+                               column_config={"Name": st.column_config.TextColumn(width="medium"),
+                                              "Capacity (kW)": st.column_config.NumberColumn(min_value=1, format="%.1f")})
+        parallel = st.checkbox("Units can run in parallel", value=False,
+                               help="Allows any combination of units to share the load.")
+        first, second = st.columns(2)
+        reserve = first.slider("Reserve margin", 0, 30, 10, format="%d%%") / 100
+        minimum_run = second.number_input("Minimum run (hours)", min_value=1, max_value=12, value=3)
+    generators = [{"generator_id": str(row["Name"]).strip(), "usable_capacity_kw": float(row["Capacity (kW)"])}
+                  for row in units if row.get("Name") and str(row["Name"]).strip() and row.get("Capacity (kW)")]
+    ready = bool(state.get("site_net"))
+    if st.button("Add the site", type="primary", disabled=not ready):
+        sites = state.setdefault("sites", {})
+        site_name = unique_site_name(name, sites)
+        try:
+            with st.spinner("Fitting the model on this site's history"):
+                result = request_site_forecast(site_name, state["site_net"], generators, parallel, reserve,
+                                               int(minimum_run), location.strip(), holidays == "Lebanon")
+            sites[site_name] = {"result": result}
+            for key in ("site_net", "site_note", "site_file", "site_name", "site_location", "site_units", "site_error"):
+                state.pop(key, None)
+            state["pending_site"] = site_name
+            st.rerun()
+        except urllib.error.HTTPError as error:
+            detail = error.read().decode("utf-8", "replace")
+            try:
+                detail = json.loads(detail).get("detail", detail)
+            except ValueError:
+                pass
+            state["site_error"] = str(detail)[:400]
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
+            state["site_error"] = f"Cannot reach the forecast service at {API_URL}."
+    if not ready:
+        st.html('<p class="cardnote">Upload a history file, or fill in the example, to enable this.</p>')
+    if state.get("site_error"):
+        notice("unavailable", state["site_error"])
+
+
+def added_site_page(name):
+    data = st.session_state["sites"][name]["result"]
+    rows = [row for row in data["hourly"] if row["net_upper_kw"] is not None]
+    day = datetime.fromisoformat(data["hourly"][0]["timestamp_local"])
+    if rows:
+        peak = max(rows, key=lambda row: row["net_upper_kw"])
+        finding = (f"Plan for <b>{day:%A %d %B %Y}</b>, the day after the last reading. It covers up to "
+                   f"<b>{peak['net_upper_kw']:.0f} kW</b> at {peak['timestamp_local'][11:16]}.")
+    else:
+        finding = f"No plan could be produced for {day:%A %d %B %Y}."
+    place = data.get("location") or "Location not given"
+    header(name, finding, f"{place} · holidays: {data.get('holiday_calendar', 'Lebanon')} · {data['history_days']} days of history")
+    with st.sidebar:
+        if st.button("Remove this site", use_container_width=True):
+            del st.session_state["sites"][name]
+            st.session_state["pending_site"] = AZM
+            st.rerun()
+    site_result(data)
+
+
+AZM, ADD_SITE = "Azm", "+ Add a site"
+VIEWS = {"Tomorrow": tomorrow_page, "Backtest": backtest_page, "Failure gallery": failure_page}
+
+
+def main():
+    st.set_page_config(page_title="Generator planner", layout="wide")
+    st.html(CSS)
+    state = st.session_state
+    sites = state.setdefault("sites", {})
+    options = [AZM, *sites, ADD_SITE]
+    if state.get("pending_site") in options:
+        state["nav_site"] = state.pop("pending_site")
+    if state.get("nav_site") not in options:
+        state["nav_site"] = AZM
+    with st.sidebar:
+        st.html('<div class="navhead">Sites</div>')
+        site = st.radio("Sites", options, key="nav_site", label_visibility="collapsed")
+        view = None
+        if site == AZM:
+            st.html('<div class="navhead">View</div>')
+            view = st.radio("View", list(VIEWS), key="nav_view", label_visibility="collapsed")
+        st.divider()
+    if site == AZM:
+        VIEWS[view]()
+    elif site == ADD_SITE:
+        new_site_page()
+    else:
+        added_site_page(site)
 
 main()

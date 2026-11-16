@@ -75,6 +75,18 @@ With no readings the answer uses the weekday-average fallback and says so in
 `input_status`. Readings are complete hourly averages in kW:
 `{"timestamp_local": "2026-08-09T23:00:00", "load_kw": 80.5, "pv_kw": 0.0}`.
 
+## Forecasting another site
+
+The page's **New site** view takes a CSV of a site's hourly history
+(`timestamp`, `load_kw`, optional `pv_kw`; kW or W) and, optionally, its
+generators, and returns a plan for the day after the last reading. The API
+equivalent is `POST /sites/forecast`. The model is fitted on the upload each
+time and nothing is stored. At least 14 days of history are required; the
+view also shows how the method scored on the site's own recent days, which
+is the only evidence for a new site. `docs/example_site_history.csv` is a
+synthetic file to try it with. This was added after the final test and is
+not part of the evaluated system.
+
 ## Reproduce each results table
 
 Every command is run as `.\.venv\Scripts\python.exe scripts/<name>.py` from
