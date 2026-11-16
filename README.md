@@ -9,6 +9,7 @@ site for checking that the method transfers.
 | Read this | For |
 |---|---|
 | [FINAL_RESULTS.md](FINAL_RESULTS.md) | **September final test**: results table, what held, what failed, final recommendation |
+| [MODEL_TUNING.md](MODEL_TUNING.md) | Model scored with the course's chapter 6 metrics (MBE/MAE/RMSE, train-test gap, confusion matrix, McNemar, Z-test) and tuned on validation folds; the tuned model is not yet served; clean test of the tuning on Household 3's July |
 | [WEEK2_RESULTS.md](WEEK2_RESULTS.md) | Model choice, generator advice, missing-input test, leakage check |
 | [WEEK3_ANALYSIS.md](WEEK3_ANALYSIS.md) | Error analysis, 3 worst days, explainability, distribution shift, human oversight, Household 3 transfer, limitations, final-test procedure |
 | [GENERATORS.md](GENERATORS.md) | Observed capacities, draft selection rule, wrong-generator metric |
@@ -26,7 +27,9 @@ hours; the forecast rule would cut that to about 20% with 0.4% of hours
 undersized. On the unseen test month (September) the same method was still
 the best of those compared: 20.2% error against 22.4% for the baseline,
 88.7% coverage, and 2.4% of hours undersized, nearly all in the first week
-of term. July 2025 (village sites) remains reserved and unscored.
+of term. Household 3's reserved July 2025 was then used once, to test the
+tuning procedure (8% lower error than untuned); the other village sites'
+July remains unscored.
 
 ## Quick start
 
@@ -90,6 +93,9 @@ this folder, after `run_baselines.py` (Quick start). Outputs go to
 | Leakage check | WEEK2_RESULTS.md | `check_leakage.py` | baselines |
 | Errors by condition, 3 worst days | WEEK3_ANALYSIS.md | `analyse_errors.py` | `walk_forward.py` |
 | Input effects (explainability) | WEEK3_ANALYSIS.md | `explain_model.py` | `build_serving_bundle.py` |
+| Chapter 6 metrics and statistical tests | MODEL_TUNING.md | `score_course_metrics.py` | `walk_forward.py` |
+| Tuning (regularization, features, ensemble, sizing rule) | MODEL_TUNING.md | `tune_model.py` | `walk_forward.py` |
+| Household 3 July test of the tuning | MODEL_TUNING.md, results/final_test_household_3.json | **Already run once; do not rerun.** `transfer_test.py --archive <zip>` rehearses on June | |
 | Household 3 transfer | WEEK3_ANALYSIS.md | `walk_forward.py --site household_3` | baselines |
 | September final test | FINAL_RESULTS.md, results/final_test_azm.json | **Already run once; do not rerun.** `final_test.py` without `--open-test-set` rehearses on August | |
 
